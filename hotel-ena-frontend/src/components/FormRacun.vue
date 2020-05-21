@@ -11,7 +11,7 @@
         </div>
         <div class="inner-wrap">
           <label class="la">Message</label>
-
+<input type="text" v-model="reservationId">
           <select
             name="field1"
             id="field1"
@@ -80,7 +80,7 @@
             <input
               type="checkbox"
               checked="checked"
-              v-model="repeat"
+              v-model="id"
               :disabled="formType=='Update'"
             />
             <span class="checkmark"></span>
@@ -117,7 +117,8 @@ import {
   NEWMESSAGE,
   TYPEYOURMESSAGE,
   SELECTDATE,
-  USER_THEME
+  USER_THEME,
+  USER_ID
 } from "../constants";
 import { ACCESS_TOKEN } from "../constants/index.js";
 const headers = {
@@ -130,6 +131,7 @@ export default {
   components: { DatePicker },
   data() {
     return {
+      id,
       messagesData: [],
       channelsData: [],
       messageTitle: localStorage.getItem(SOMEMESSAGETITLE),
@@ -141,6 +143,7 @@ export default {
       showChannelError: false,
       repeat: false,
       active: false,
+      reservationId,
       formType: "Create",
       showMessageOption: true,
       channelId: "",
@@ -179,43 +182,8 @@ export default {
   },
 
   mounted: async function() {
-    if (localStorage.getItem(USER_LANGUAGE) != "en") {
-      document.getElementById("formTitle").innerHTML = localStorage.getItem(
-        CREATESCHEDULE
-      );
-      document.getElementById("formTitle").style.color = "black";
-      document.getElementById("submit").value = localStorage.getItem(SAVE);
-      document.getElementById("cancel").value = localStorage.getItem(CANCEL);
-      document.getElementsByClassName(
-        "checkText"
-      )[0].innerHTML = localStorage.getItem(REPEAT);
-      document.getElementsByClassName("la")[0].innerHTML = localStorage.getItem(
-        MESSAGE
-      );
-      document.getElementsByClassName("la")[1].innerHTML = localStorage.getItem(
-        RUNAT
-      );
-      document.getElementsByClassName("la")[2].innerHTML = localStorage.getItem(
-        SOMECHANNELNAME
-      );
-      document.getElementsByClassName(
-        "checkText"
-      )[1].innerHTML = localStorage.getItem(ACTIVE);
-    }
-     if (localStorage.getItem(USER_THEME) == "Dark") {
-       document.getElementsByClassName("form-style-10")[0].style.backgroundColor="#191919";
-      document.getElementById("formTitle").style.color="white";
-      document.getElementById("formaS").style.backgroundColor="#191919";
-       document.getElementById("cancel").style.backgroundColor="#191919";
-        document.getElementById("cancel").style.color="white";
-       document.getElementsByClassName("inner-wrap")[0].style.backgroundColor="#191919";
-       document.getElementsByClassName("mx-input")[0].style.backgroundColor="#191919";
-       document.getElementsByTagName("label")[0].style.backgroundColor="#191919";
-       document.getElementsByTagName("label")[1].style.backgroundColor="#191919";
-       document.getElementsByTagName("label")[2].style.backgroundColor="#191919";
-       document.getElementsByClassName("la")[2].style.backgroundColor="#191919";
-      //document.getElementById("messages").style.backgroundColor="black";
-    }
+    
+    
     if (this.$route.params.id == null) {
       try {
         const res = await axios.get(API_BASE_URL + "/api/messages", {
@@ -230,7 +198,7 @@ export default {
       var currentR = this.$router.currentRoute.fullPath;
       var path = currentR.substring(0, 31);
 
-      if (path == "/dashboard/messages/newSchedule") {
+      if (path == "/dashboard/racuni/newBill") {
         let headers = {
   "Content-Type": "application/json",
   Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
@@ -254,7 +222,7 @@ export default {
           res = await axios.get(
             API_BASE_URL + "/api/schedules/" + this.$route.params.id,{headers:headers}
           );
-          this.active = res.data.active;
+          this.id = res.data.id;
           this.repeat = res.data.repeat;
           this.messageTitle = res.data.message.title;
           this.date = res.data.runAt;
@@ -383,8 +351,10 @@ export default {
         if (path == "/dashboard/messages/newSchedule") {
           try {
             await axios.post(
-              API_BASE_URL + "/api/schedules",
+              API_BASE_URL + "/korisnik/racun/create",
               {
+                reservationId: this.reservationId,
+                createdBy: localStorage.getItem(USER_ID),
                 active: this.active,
                 channelId: this.channelId,
                 repeat: this.repeat,

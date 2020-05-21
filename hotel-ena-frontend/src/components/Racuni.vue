@@ -51,13 +51,13 @@
           <div class="linear1"></div>
           <div class="linear2"></div>
           <div class="column1 column">
-            <p>{{ schedule.message.title }}</p>
+            <p>{{ schedule.id }}</p>
           </div>
           <div class="column2 column">
-            <p>{{ schedule.runAt | shortDate}}</p>
+            <p>{{ schedule.userId }}</p>
           </div>
           <div class="column3 column">
-            <p>{{ schedule.active | activeView }}</p>
+            <p>{{ schedule.createdBy }}</p>
           </div>
           <div class="column6 column">
             <p>{{ schedule.repeat | repeatView }}</p>
@@ -166,6 +166,7 @@ export default {
     }
   },
 
+
   methods: {
     async reloadSchedules() {
       let headers = {
@@ -175,23 +176,15 @@ export default {
       var pg = this.page - 1;
       try {
         const res = await axios.get(
-          API_BASE_URL +
-            "/api/schedules?page=" +
-            pg +
-            "&size=" +
-            this.rowSize +
-            "&sort=" +
-            this.sortByValue +
-            "," +
-            this.sortType,
+          "http://localhost:8080/" +
+            "korisnik/racun/all",
           { headers: headers }
         );
 
-        if (res.data.totalPages < this.page)
-          this.changePage(res.data.totalPages);
+      
 
-        this.schedulesData = res.data.content;
-        this.pagesSize = res.data.totalPages;
+        this.schedulesData = res.data;
+        
       } catch (err) {
         this.showNotification(-1);
       }
@@ -283,18 +276,18 @@ export default {
         Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
       };
       try {
-        const res = await axios.get(
-          API_BASE_URL +
-            "/api/schedules?page=0&size=" +
-            this.rowSize +
-            "&sort=createdAt," +
-            this.sortType,
+      
+           const res = await axios.get(
+          "http://localhost:8080/" +
+            "korisnik/racun/all",
           { headers: headers }
         );
-        this.schedulesData = res.data.content;
-        if (res.data.totalPages == 0) this.pagesSize = 1;
-        else this.pagesSize = res.data.totalPages;
-        this.rowSize = res.data.size;
+
+      
+
+        this.schedulesData = res.data;
+      
+       
       } catch (err) {
         this.showNotification(-1);
       }

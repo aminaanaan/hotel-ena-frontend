@@ -103,7 +103,7 @@ const router = new VueRouter({
                   component: formaS
                 },
                 {
-                  path: "updateSchedule/:id",
+                  path: "newBill/:id",
                   component: formaS
                 }
               ]
