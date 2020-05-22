@@ -1,15 +1,35 @@
 
 <template>
   <div id="login">
+    <router-view></router-view>
     <div id="right">
       <div id="right-content">
         <a id="btn btn-block social-btn google" href>
           <div id="google-sign"></div>
-        </a>
-      </div>
+          </a>
+      <div>
+      <br />
+      <br />
+     
     </div>
+            
+                    <button id="button"  className="btn btn-block btn-primary" @click="showLoginForm"> Login </button>
+<br>
+                     <button id="button2"  className="btn btn-block btn-primary" @click="showRegisterForm"> Sign Up </button>
+                </div>
+
+                 
+            
+                   
+              
+                
+         </div>
+   
     <div id="left">
      <h1> Hotel Ena Application </h1>
+    <div>
+     
+  </div>
       <br />
       <br />
      
@@ -18,10 +38,25 @@
 </template>
 
 <script>
-import { GOOGLE_AUTH_URL } from "../constants/index.js";
+import { GOOGLE_AUTH_URL,API_BASE_URL } from "../constants/index.js";
 export default {
   name: "login",
-  methods: {},
+   data() {
+    return {
+      email: "",
+      password:"",
+      };
+  },
+  methods: {
+    showLoginForm(){
+      console.log("enters");
+      this.$router.push("/loginForm");
+    },
+    showRegisterForm(){
+      console.log("enters");
+      this.$router.push("/registerForm");
+    }
+  },
   mounted() {
     document.getElementById(
       "btn btn-block social-btn google"
@@ -35,7 +70,22 @@ export default {
 #login {
   height: 100vh;
 }
-
+#button{
+  color:grey;
+  background: #fff;
+   height: 50px;
+  width: 300px;
+    background-position: center;
+  background-size: cover;
+}
+#button2{
+  color:grey;
+  background: #fff;
+   height: 50px;
+  width: 300px;
+    background-position: center;
+  background-size: cover;
+}
 #google-sign{
   height: 50px;
   width: 300px;
@@ -43,9 +93,36 @@ export default {
   background-position: center;
   background-size: cover;
 }
+#button:hover{
+  height: 60px;
+  
+}
+#button2:hover{
+  height: 60px;
 
+}
 #google-sign:hover{
   height: 60px;
+}
+.login-container {
+    text-align: center;
+}
+.form-control{
+  border:2px solid grey;
+}
+.form-item{
+  width: 200px;
+}
+.login-content {
+    background: #fff;
+    box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+    border-radius: 2px;
+    width: 500px;
+    display: inline-block;
+    margin-top: 30px;
+    vertical-align: middle;
+    position: relative;    
+    padding: 35px;
 }
 
 #right {
@@ -58,6 +135,7 @@ export default {
 }
 
 #right-content {
+  width:30%;
   position: absolute;
   font-size: 20px;
   right: 15%;

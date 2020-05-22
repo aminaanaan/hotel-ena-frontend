@@ -64,7 +64,7 @@ export default {
   },
   data() {
     return {
-      items: [{ title: "Profile" }, { title: "Settings" }, { title: "Log Out" }]
+      items: [{ title: "Profile" }, { title: "Log Out" }]
     };
   },
 

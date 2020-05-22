@@ -4,24 +4,17 @@
       <form id="forma">
         <div id="section">
           <p id="pollViewTitle">
-            Poll
+            Login
             <label id="close-icon" @click="exit" style="font-size: 20px">X</label>
           </p>
         </div>
         <div id="inner-wrap">
-          <label class="la">Title</label>
-          <input type="text" name="field1" id="field1" v-model="title" placeholder="New poll title" disabled/>
-
-          <label id="option">Option</label>
-          <label id="votenumber" style="float: right">Vote number</label>
-
-          <ul>
-            <li v-for="choice in choiceList" :key="choice.choiceId">
-              <h5 style="width: 70%">{{ choice.choiceValue }}</h5>
-              <h5>{{ choice.counter }}</h5>
-            </li>
-          </ul>
-
+          <label class="la">Email</label>
+          <input type="text" name="field1" id="field1" v-model="email" placeholder="Enter your email"/>
+ <label class="la">Password</label>
+          <input type="password" name="field1" id="field1" v-model="password" placeholder="Enter your password"/>
+         
+ <input type="button" value="Save" id="submit" @click="save" />
           <input type="button" value="Cancel" @click="exit" id="cancle" class="input-options" />
         </div>
       </form>
@@ -31,65 +24,57 @@
 
 <script>
 import axios from "axios";
-import { API_BASE_URL, VOTENUMBER } from "../constants/index.js";
-import {
-  Current_User_Role,
-  THEME_ID,
-  THEME,
-  SAVE,
-  CANCEL,
-  USER_LANGUAGE,
-  POLL,
-  TITLE,
-  NEWPOLLTITLE,
-  OPTION,USER_THEME
-} from "../constants/index.js";
-import { User_Email } from "../constants/index.js";
-import { ACCESS_TOKEN } from "../constants/index.js";
+import { API_BASE_URL,ACCESS_TOKEN } from "../constants/index.js";
+
 import ClickOutside from "vue-click-outside";
 import { setTimeout } from "timers";
-const headers = {
+/*const headers = {
   "Content-Type": "application/json",
-  Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
-};
+  Authorization: "Bearer " + //localStorage.getItem(ACCESS_TOKEN)
+};*/
 
 export default {
   name: "pollView",
   data() {
     return {
       title: "",
-      choiceList: []
+      choiceList: [],
+      password:"",
+      email:"",
     };
   },
 
   mounted: function() {
-    if (localStorage.getItem(USER_LANGUAGE) != "en") {
-      document.getElementById("pollViewTitle").innerHTML = localStorage.getItem(
-        POLL
-      );
-      document.getElementById("field1").placeholder = localStorage.getItem(
-        NEWPOLLTITLE
-      );
-      document.getElementById("option").innerHTML = localStorage.getItem(
-        OPTION
-      );
-      document.getElementById("votenumber").innerHTML = localStorage.getItem(
-        VOTENUMBER
-      );
-      document.getElementById("cancle").value = localStorage.getItem(CANCEL);
-    }
-    if (localStorage.getItem(USER_THEME) == "Dark") {
-      document.getElementById("pollViewTitle").style.color="white";
-      document.getElementById("form-style-10").style.backgroundColor="#191919";
-       document.getElementById("inner-wrap").style.backgroundColor="#191919";
-    }
+  
     this.create();
   },
   methods: {
     exit() {
       this.$router.go(-1);
     },
-    async create() {
+    async save(){
+ try {
+           const res= await axios.post(
+              API_BASE_URL + "/auth/login",
+              {
+              email:this.email,
+              password:this.password
+              },
+              //{ headers: headers }
+            );
+            if(res.status==200){
+            localStorage.setItem(ACCESS_TOKEN,res.data.accessToken)
+            this.$router.push("/dashboard/rezervacije")
+            }
+            else {
+      this.$router.push("/error");
+    }
+            this.$emit("show-notification");
+          } catch (err) {
+            this.$emit("show-notification", -1);
+          }
+    },
+   /* async create() {
       try {
         const res = await axios.get(
           API_BASE_URL + "/api/polls/" + this.$route.params.id
@@ -98,8 +83,8 @@ export default {
         this.choiceList = res.data.choiceList;
       } catch (err) {
         this.$emit("show-notification", -1);
-      }
-    }
+      }*/
+    //}
   }
 };
 </script>
@@ -264,7 +249,7 @@ ul li {
 #close-icon {
   display: inline;
   text-align: right;
-  float: right;
+  
   margin: 0 20px 10px 0px;
 }
 

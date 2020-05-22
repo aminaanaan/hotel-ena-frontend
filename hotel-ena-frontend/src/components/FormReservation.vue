@@ -43,6 +43,22 @@
         </div>
       </form>
     </div>
+    <div
+      id="notification"
+      v-show="showNotificationValue"
+      :class="{redBorder: errorOccured, greenBorder: !errorOccured}"
+    >
+      <input
+        type="text"
+        v-model="textNoti"
+        readonly
+        :class="{redText: errorOccured, greenText: !errorOccured}"
+      />
+      <button
+        @click="showNotification"
+        :class="{redBackground: errorOccured, greenBackground: !errorOccured}"
+      >OK</button>
+    </div>
   </div>
 </template>
 
@@ -78,15 +94,15 @@ export default {
       urlSelected: false,
       regexTitle: /^.{5,30}$/,
       regexText: /^.{20,}$/,
-      styleCharacters: ""
+      styleCharacters: "",
+       textNoti: "",
+        errorOccured: false,
+        showNotificationValue: false
     };
   },
 
   mounted: function() {
-    if (this.$route.params.id != null) {
-      this.create();
-      this.formType = "Update";
-    }
+   
    
   },
 
@@ -117,7 +133,22 @@ export default {
         return true;
       }
     },
+ closeNotification(){
+      this.showNotificationValue = false;
+    },
 
+    showNotification(value) {
+      if (value == -1) {
+        this.textNoti = "Some error have occured";
+        this.errorOccured = true;
+      } else {
+        this.errorOccured = false;
+        this.textNoti = "Succes";
+      }
+      this.showNotificationValue = !this.showNotificationValue;
+      setTimeout(this.closeNotification, 1500)
+      {}
+    },
     check_text(value) {
       if (!this.regexText.test(value)) {
         this.showMessageError = true;

@@ -13,14 +13,13 @@ import user from "./components/Users.vue"
 import login from "./components/Login.vue"
 import Dashboard from "./components/Dashboard.vue"
 import Profil from "./components/Profile.vue"
-import settings from "./components/Settings.vue"
 import OAuth2RedirectHandler from "./components/OAuth2RedirectHandler.vue"
 import Error from "./components/Error.vue"
-
+import registration from "./components/RegistrationForm.vue"
 import Poll from "./components/Poll.vue"
 import FormPoll from "./components/FormPoll.vue"
 import Activity from "./components/Activity.vue"
-import viewPoll from "./components/viewPoll.vue"
+import viewPoll from "./components/LoginForm.vue"
 
 Vue.config.productionTip = false;
 
@@ -37,6 +36,14 @@ const router = new VueRouter({
       path: "/login",
       component: login
     },
+  {
+    path:"/loginForm",
+    component:viewPoll
+  },
+  {
+    path:"/registerForm",
+    component:registration
+  },
     {
       path: "/oauth2/redirect",
       component: OAuth2RedirectHandler
@@ -138,10 +145,7 @@ const router = new VueRouter({
             path: "activity",
             component: Activity,
           },
-          {
-            path: "/settings",
-            component: settings
-          },
+         
           {
             path: "/profile",
             component: Profil

@@ -71,7 +71,7 @@
         :class="{redText: errorOccured, greenText: !errorOccured}"
       />
       <button
-        @click="showNotification"
+        @click="f"
         :class="{redBackground: errorOccured, greenBackground: !errorOccured}"
       >OK</button>
     </div>
