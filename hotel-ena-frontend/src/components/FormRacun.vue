@@ -1,99 +1,61 @@
 <template>
-  <div id="formaS">
-    <div class="form-style-10">
+  <div id="formaRacun">
+    <div class="form-style-10" style="overflow-y:auto;  height:auto">
       <form id="forma">
-        <div class="section">
-          <p id="section-text">
-            <span id="formTitle">{{ formType }} Schedule</span>
+        <div class="div-title">
+          <p id="section-title">
+            <span id="formTitle">{{ formType }} Bill Form</span>
 
             <label id="close-icon" @click="exit">x</label>
           </p>
         </div>
         <div class="inner-wrap">
-          <label class="la">Message</label>
-<input type="text" v-model="reservationId">
-          <select
-            name="field1"
-            id="field1"
-            v-model="messageTitle"
-            @click="getMessageID"
-            :class="{errorBorder: showTitleError, noErrorBorder: !showTitleError}"
-            :disabled="formType=='Update'"
-          >
-            <option id="messageTitle" disabled selected>{{ messageTitle }}</option>
 
-            <option
-              v-for="message in messagesData"
-              :key="message.messageId"
-              v-show="showMessageOption"
-            >{{ message.title }}</option>
-          </select>
+          <label class="id">Bill ID: </label>
+          <br class="clear" /> 
+        
+          <input type="text" id="billid" name="billid" style="display:inline"><br> 
+          <label class="reservationId"> Reservation ID:  </label>
+          <br class="clear" /> 
+          <input type="text" id="reservationId" name="reservationId" required><br>  
 
-          <span v-show="showTitleError">Message title is required</span>
-          <br />
+          <label class="createdby"> Created by:  </label>
+          <br class="clear" /> 
+          <input type="text" id="createdby" name="createdby" required><br>  
 
-          <label class="la">Run At</label>
-          <br />
-          <div class="input-append date form_datetime">
-            <div>
-              <date-picker
-                v-model="datetime"
-                :lang="lang"
-                style="margin-top: 8px"
-                type="datetime"
-                format="[On] YYYY-MM-DD [at] HH:mm"
-                :minute-step="1"
-                :disabled="formType=='Update'"
-                confirm
-              ></date-picker>
-            </div>
-          </div>
-          <br />
-          <span
-            v-show="showDateError"
-          >Date and time is required and must not be less then current date and time</span>
-          <br />
+          <label class="userId"> User ID:  </label>
+          <br class="clear" /> 
+          <input type="text" id="userId" name="userId" required><br>  
+          
+          <label class="cost"> Cost:  </label>
+          <br class="clear" /> 
+          <input type="number" id="cost" name="cost" required><br>
 
-          <label class="la">Channel name</label>
-          <select
-            id="field3"
-            v-model="channelName"
-            @click="getChannelID"
-            :class="{errorBorder: showChannelError, noErrorBorder: !showChannelError}"
-            :disabled="formType=='Update'"
-          >
-            <option disabled selected>{{channelName}}</option>
-            <option
-              v-for="channel in channelsData"
-              :key="channel.channelName"
-            >{{ channel.channelName }}</option>
-          </select>
+          
 
-          <span v-show="showChannelError">Channel name is required</span>
+          <label class="created"> Created: </label>
 
-          <br />
-          <br />
+          <input type="datetime-local" id="created"
+            name="created" value="2020-05-26T19:30" 
+          > 
+          <br class = "clear" />
+          <input type="radio" id="paidTrue" name="paid" value="paidTrue">
+          <label class ="true"> Paid </label><br>
+          <input type="radio" id="paidFalse" name="paid" value="paidFalse">
+          <label class="false"> Not paid </label><br>
+        
 
-          <label class="container">
-            <p class="checkText">Repeat</p>
+        </div>
 
-            <input
-              type="checkbox"
-              checked="checked"
-              v-model="id"
-              :disabled="formType=='Update'"
-            />
-            <span class="checkmark"></span>
-          </label>
-          <br />
-          <label class="container">
-            <p class="checkText">Active</p>
-            <input type="checkbox" checked="checked" v-model="active" />
-            <span class="checkmark"></span>
-          </label>
+        <div class="bottom">
+          <br class="clear" />
+         
           <input type="button" value="Save" id="submit" @click="save" />
           <input type="button" id="cancel" value="Cancel" @click="exit" />
+           <br/>
+          <br class="clear" />
         </div>
+
       </form>
     </div>
   </div>
@@ -105,7 +67,7 @@ import DatePicker from "vue2-datepicker";
 import {
   API_BASE_URL,
   USER_LANGUAGE,
-  CREATESCHEDULE,
+  CREATEBILL,
   SAVE,
   CANCEL,
   REPEAT,
@@ -127,7 +89,7 @@ const headers = {
 };
 
 export default {
-  name: "formaS",
+  name: "formaRacun",
   components: { DatePicker },
   data() {
     return {
@@ -148,7 +110,7 @@ export default {
       showMessageOption: true,
       channelId: "",
       targetChannel: "",
-      datetime: new Date(),
+      created: new Date(),
 
       date: "",
       time: "",
@@ -180,6 +142,8 @@ export default {
       }
     };
   },
+
+  
 
   mounted: async function() {
     
@@ -259,8 +223,8 @@ export default {
       if (this.liveValidation == true) this.check_messageTitle(value);
     },
 
-    datetime(value) {
-      this.datetime = value;
+    created(value) {
+      this.created = value;
       if (this.liveValidation == true) this.check_date(value);
     },
 
@@ -274,6 +238,12 @@ export default {
     exit() {
       this.$router.go(-1);
     },
+
+  _today: function () {
+  var created = document.querySelector(created);
+  var today = new Date();
+  created.value = today.toISOString().substr(0, 10);
+},
 
     check_messageTitle(value) {
       if (this.messageTitle == "Some message title") {
@@ -299,17 +269,17 @@ export default {
       var today = new Date();
       var inputi = document.getElementsByClassName("mx-input")[0];
       if (
-        (this.datetime.getFullYear() == today.getFullYear() &&
-          this.datetime.getMonth() == today.getMonth() &&
-          this.datetime.getDay() == today.getDay()) == true
+        (this.created.getFullYear() == today.getFullYear() &&
+          this.created.getMonth() == today.getMonth() &&
+          this.created.getDay() == today.getDay()) == true
       ) {
-        if (this.datetime.getHours() > today.getHours()) {
+        if (this.created.getHours() > today.getHours()) {
           this.showDateError = false;
           inputi.style.borderColor = "rgba(0, 0, 0, 0.2)";
           return true;
         } else if (
-          this.datetime.getHours() == today.getHours() &&
-          this.datetime.getMinutes() > today.getMinutes()
+          this.created.getHours() == today.getHours() &&
+          this.created.getMinutes() > today.getMinutes()
         ) {
           this.showDateError = false;
           inputi.style.borderColor = "rgba(0, 0, 0, 0.2)";
@@ -319,7 +289,7 @@ export default {
           this.showDateError = true;
           return false;
         }
-      } else if (today > this.datetime) {
+      } else if (today > this.created) {
         inputi.style.borderColor = "red";
         this.showDateError = true;
         return false;
@@ -335,7 +305,7 @@ export default {
       if (this.check_messageTitle(this.messageTitle) == false)
         this.invalid = true;
 
-      if (this.check_date(this.datetime) == false) this.invalid = true;
+      if (this.check_date(this.created) == false) this.invalid = true;
 
       if (this.check_channelName(this.channelName) == false)
         this.invalid = true;
@@ -359,7 +329,7 @@ export default {
                 channelId: this.channelId,
                 repeat: this.repeat,
                 messageId: this.$route.params.id,
-                runAt: this.datetime,
+                runAt: this.created,
                 intervalId: "1"
               },
               { headers: headers }
@@ -390,7 +360,7 @@ export default {
               channelId: this.channelId,
               messageId: this.messId,
               repeat: this.repeat,
-              runAt: this.datetime,
+              runAt: this.created,
               intervalId: "1"
             },
             { headers: headers }
@@ -440,10 +410,12 @@ export default {
   margin-top: 15px;
 }
 
-#check,
-#active {
+.form-style-10 #paidTrue,
+#paidFalse {
   width: 10%;
+  display: inline-block;
 }
+
 
 #cancel,
 #submit {
@@ -455,6 +427,33 @@ export default {
   overflow: visible;
 }
 
+.form-style-10 #calendar, #created {
+    display: block;
+    font: 1rem 'Fira Sans', sans-serif;
+    color:#2c3e50;
+}
+
+.form-style-10 .inline {
+  display: inline;
+}
+
+.form-style-10 #created{
+    margin: .4rem 0;
+}
+.form-style-10 created {
+      color:#2c3e50;
+
+}
+
+.form-style-10 #billid,
+#reservationId, #createdby, #userId, #cost{
+  width: 100%;
+  border: 0.5px solid rgb(161, 154, 154);
+  padding: 12px 20px;
+  margin: 5px 0;
+  box-sizing: border-box;
+}
+
 .mx-input-append {
   position: absolute;
   top: 0;
@@ -462,7 +461,7 @@ export default {
   width: 30px;
 }
 
-#formaS {
+#formaRacun {
   width: 640px;
   height: 510px;
   position: absolute;
@@ -491,7 +490,16 @@ export default {
   padding: 0px 20px;
   background: #fff;
   border-radius: 6px;
-  margin-bottom: 15px;
+  margin-bottom: 0px;
+}
+
+.form-style-10 .bottom {
+  display: block;
+  padding: 0px 0px;
+  background: #fff;
+  border-radius: 6px;
+  margin-bottom: 40px;
+  margin-right: 40px;
 }
 
 .form-style-10 label {
@@ -518,7 +526,7 @@ export default {
 .form-style-10 textarea,
 .form-style-10 select {
   overflow: none;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   display: block;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -531,13 +539,13 @@ export default {
   -moz-border-radius: 6px;
 }
 
-.form-style-10 .section {
+.form-style-10 .div-title {
   font: normal 25px "Bitter", serif;
   padding-left: 20px;
   padding-bottom: 5px;
 }
 
-.form-style-10 .section p {
+.form-style-10 .div-title p {
   height: 20%;
   width: 100%;
   font-weight: bold;
@@ -593,6 +601,7 @@ export default {
   -moz-box-shadow: inset 0px 2px 2px 0px rgba(255, 255, 255, 0.28);
   -webkit-box-shadow: inset 0px 2px 2px 0px rgba(255, 255, 255, 0.28);
   box-shadow: inset 0px 2px 2px 0px rgba(255, 255, 255, 0.28);
+  
 }
 
 .form-style-10 .privacy-policy {
@@ -617,7 +626,7 @@ export default {
   display: inline;
   text-align: right;
   position: relative;
-  left: 60%;
+  left: 79%;
 }
 
 #close-icon:hover {
@@ -628,14 +637,7 @@ export default {
   margin-bottom: 50px;
 }
 
-#field1,
-#field2,
-#field3 {
-  margin-bottom: 10px;
-  height: 37px;
-  margin-top: 10px;
-  font-size: 15px;
-}
+
 
 .errorBorder {
   border: 1px inset rgb(253, 38, 38);
@@ -654,15 +656,7 @@ span {
   cursor: pointer;
 }
 
-.la {
-  display: inline;
-  background-color: white;
-  position: relative;
-  top: 15px;
-  left: 10px;
-  z-index: 99;
-  padding: 0px 5px;
-}
+
 
 .checkText {
   position: relative;
@@ -745,7 +739,13 @@ span {
   transform: rotate(45deg);
 }
 
+
 .mx-datepicker {
   width: 100%;
+}
+
+.clear {
+    clear:both;
+    line-height:0;
 }
 </style>
