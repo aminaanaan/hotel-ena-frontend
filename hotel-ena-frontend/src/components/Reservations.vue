@@ -8,22 +8,20 @@
       <ul id="list">
         <li id="title-li">
           <div class="column1 column">
-            <h5>Cost</h5>
-            <p>
-              <i class="material-icons" @click="sortBy('title')" title="Sort by title">arrow_drop_down</i>
-            </p>
+            <h5>Valid From</h5>
+           
           </div>
           <div class="column2 column">
-            <h5>Text</h5>
-            <p>
-              <i class="material-icons" @click="sortBy('text')" title="Sort by text">arrow_drop_down</i>
-            </p>
+            <h5>Valid To</h5>
+          
+          </div>
+           <div class="column2 column">
+            <h5>Done</h5>
+          
           </div>
           <div class="column3 column">
             <h5>Created At</h5>
-            <p>
-              <i class="tooltip, material-icons" @click="sortBy('createdAt')" title="Sort by date">arrow_drop_down</i>
-            </p>
+           
           </div>
           <div class="column4 column">
             <p>
@@ -39,10 +37,13 @@
             <p>{{message.validFrom}}</p>
           </div>
           <div class="column2 column">
-            <p class="lip">{{message.id}}</p>
+            <p class="lip">{{message.validTo}}</p>
+          </div>
+           <div class="column2 column">
+            <input type="checkbox" class="lip" v-model="message.done" checked="message.done" disabled/>
           </div>
           <div class="column3 column">
-            <p class="lip">{{message.validTo}}</p>
+            <p class="lip">{{message.created}}</p>
           </div>
           <div class="column4 column">
             <i
@@ -50,8 +51,8 @@
               @click="showScheduleForm(message.messageId)"
             title="Create schedule">assignment_turned_in</i>
             <i class="material-icons" @click="showTriggerForm(message.messageId)" title="Create trigger">assistant</i>
-            <i class="material-icons" @click="editMessage(message.messageId)" title="Edit message">create</i>
-            <i class="material-icons" @click="deleteMessage(message.messageId)" title="Delete message">delete</i>
+            <i class="material-icons" @click="editReservation(message.id)" title="Edit reservation">create</i>
+            <i class="material-icons" @click="deleteReservation(message.id)" title="Delete reservation">delete</i>
           </div>
         </li>
       </ul>
@@ -97,16 +98,8 @@
 <script>
 /* eslint-disable */
 import {
-  THEME_ID,
-  THEME,
   API_BASE_URL,
-  TITLE,
-  TEXT,
-  CREATEDAT,
-  USER_THEME,
-  USER_LANGUAGE,
   USER_NAME,
-  USER_PIC,
   USER_ID,
   CURRENT_USER_ROLE
 } from "../constants/index.js";
@@ -130,7 +123,8 @@ export default {
       sortByValue: "createdAt",
       textNoti: "",
       errorOccured: false,
-      showNotificationValue: false
+      showNotificationValue: false,
+      uri:"",
     };
   },
   mounted: async function() {
@@ -221,39 +215,25 @@ export default {
       this.$router.push("/dashboard/messages/newSchedule/" + id);
     },
 
-    async editMessage(id) {
-      this.$router.push("/dashboard/messages/updateMessage/" + id);
+    async editReservation(id) {
+      this.$router.push("/dashboard/rezervacije/updateReservation/" + id);
     },
 
-    async deleteMessage(id) {
+    async deleteReservation(id) {
       let headers = {
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
       };
-      await axios.delete(API_BASE_URL + "/api/messages/" + id);
-      var pg = this.page - 1;
 
       try {
-        const res = await axios.get(
+        const res = await axios.delete(
           API_BASE_URL +
-            "/api/messages?page=" +
-            pg +
-            "&size=" +
-            this.rowSize +
-            "&sort=" +
-            this.sortByValue +
-            "," +
-            this.sortType,
+            "/korisnik/rezervacija/"+id,
           { headers: headers }
         );
 
-        if (res.data.numberOfElements == 0) {
-          if (this.page != 1) this.changePage(this.page - 1);
-        }
-        this.messagesData = res.data.content;
-        if (res.data.totalPages == 0) this.pagesSize = 1;
-        else this.pagesSize = res.data.totalPages;
         this.showNotification(200);
+        this.create();
       } catch (err) {
         this.showNotification(-1);
       }
@@ -285,25 +265,34 @@ export default {
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
       };
-      try {
+      console.log(localStorage.getItem(CURRENT_USER_ROLE));
+      //roles
+   /*   if(localStorage.getItem(CURRENT_USER_ROLE)=="EMPLOYEE"){
+         uri="/korisnik/reservation/employee/" + localStorage.getItem(USER_ID);
+      }
+      else if(localStorage.getItem(CURRENT_USER_ROLE)=="ADMIN"){
+ uri="/korisnik/reservation/admin";
+    }
+    else{
+       uri="/korisnik/reservation/"  + localStorage.getItem(USER_ID)
+    }*/
+     
          const res = await axios.get(
           API_BASE_URL +
-            "/korisnik/" + localStorage.getItem(USER_ID)
-            +
-            "/employee/bill" ,
+             "/korisnik/reservation/employee/" + localStorage.getItem(USER_ID),
           { headers: headers }
-        );
-
-        if (res.data.totalPages < this.page)
-          this.changePage(res.data.totalPages);
-
-        this.messagesData = res.data;
-        this.pagesSize = res.data.totalPages;
-      } catch (err) {
-        this.showNotification(-1);
-      }
+        ).then((response) => {
+           this.messagesData = response.data;
+              console.log(response);
+ this.showNotification(200,response);
+ this.exit();
+}, (error) => {
+  console.log(error.message);
+  this.showNotification(-1,error.message);
+});
     
-    },
+    
+  },
 
     sortBy(value) {
       if (this.sortType == "desc") this.sortType = "asc";

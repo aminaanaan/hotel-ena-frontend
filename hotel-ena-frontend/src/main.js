@@ -95,7 +95,7 @@ const router = new VueRouter({
                   component: formaS
                 },
                 {
-                  path: "updateMessage/:id",
+                  path: "updateReservation/:id",
                   component: FormReservation
                 }
               ]

@@ -1,10 +1,11 @@
 <template>
   <div id="registration">
+     <router-view  @show-notification="showNotification($event)"></router-view>
     <div id="form-style-10">
       <form id="forma">
         <div id="section">
-          <p id="pollViewTitle">
-            Registration
+          <p>
+            Sign up to Hotel Ena
             <label id="close-icon" @click="exit" style="font-size: 20px">X</label>
           </p>
         </div>
@@ -18,11 +19,26 @@
           <input type="text" name="field1" id="field1" v-model="email" placeholder="Enter your email" required/>
  <label class="la">Password</label>
           <input type="password" name="field1" id="field1" v-model="password" placeholder="Enter your password" required/>
-         <span v-show="ifError"> something </span>
  <input type="button" value="Save" id="submit" @click="save" />
           <input type="button" value="Cancel" @click="exit" id="cancle" class="input-options" />
         </div>
       </form>
+    </div>
+      <div
+      id="notification"
+      v-show="showNoti"
+      :class="{redBorder: errorOccured, greenBorder: !errorOccured}"
+    >
+      <input
+        type="text"
+        v-model="textNoti"
+        readonly
+        :class="{redText: errorOccured, greenText: !errorOccured}"
+      />
+      <button
+        @click="showNotification"
+        :class="{redBackground: errorOccured, greenBackground: !errorOccured}"
+      >OK</button>
     </div>
   </div>
 </template>
@@ -48,19 +64,37 @@ export default {
       email:"",
       ifError:false,
       error:"",
+        textNoti: "",
+      errorOccured: false,
+      showNoti: false
     };
   },
 
   mounted: function() {
   
-    this.create();
   },
   methods: {
+      showNotification(value,text) {
+      if (value == -1) {
+        this.textNoti = text;
+        this.errorOccured = true;
+      } else {
+        this.errorOccured = false;
+        this.textNoti = text;
+      }
+      this.showNoti = !this.showNoti;
+      setTimeout(this.closeNoti, 1500);
+      {
+      }
+    },
+     closeNoti() {
+      this.showNoti = false;
+    },
     exit() {
       this.$router.go(-1);
     },
     async save(){
- try {
+ 
            const res= await axios.post(
               API_BASE_URL + "/auth/signup",
               {
@@ -68,15 +102,21 @@ export default {
               password:this.password,
               name:this.name,
               surname:this.surname
-              },
-              //{ headers: headers }
-            );
-            if(res.data.success==true){
-           
+              }
+            ).then((response) => {
+              console.log(response);
+ this.showNotification(200,response);
+ this.exit();
+}, (error) => {
+  console.log(error.message);
+  this.showNotification(-1,error.message);
+});
+           /* if(res.data.success==true){
+              this.showNotification(200);
             this.$router.push("/login")
             }
             else {
-              cosnole.log("enters")
+              console.log("enters")
               this.ifError=true;
               this.error=res.data.apierror;
 
@@ -84,8 +124,11 @@ export default {
     }
             this.$emit("show-notification");
           } catch (err) {
+            
+        this.showNotification(-1);
+      
             this.$emit("show-notification", -1);
-          }
+          }*/
     },
    
   }
