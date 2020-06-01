@@ -1,12 +1,16 @@
 <template>
-  <div id="messages">
-    <router-view @reload-messages="reloadMessages()" @show-notification="showNotification($event)"></router-view>
+  <div id="reservations">
+    <router-view @reload-reservations="reloadReservations()" @show-notification="showNotification($event)"></router-view>
     <div id="header">
-      <h1>Rezervacije</h1>
+      <h1>Reservations</h1>
     </div>
     <div id="divlist">
       <ul id="list">
         <li id="title-li">
+             <div class="column1 column">
+            <h5>Id</h5>
+           
+          </div>
           <div class="column1 column">
             <h5>Valid From</h5>
            
@@ -30,52 +34,39 @@
           </div>
         </li>
 
-        <li v-for="message in messagesData" :key="message.id">
-          <div class="linear2"></div>
-          <div class="linear1"></div>
+        <li v-for="reservation in reservationsData" :key="reservation.id">
+           <div class="column1 column">
+            <p>{{reservation.id}}</p>
+          </div>
           <div class="column1 column">
-            <p>{{message.validFrom}}</p>
+            <p>{{reservation.validFrom}}</p>
           </div>
           <div class="column2 column">
-            <p class="lip">{{message.validTo}}</p>
+            <p class="lip">{{reservation.validTo}}</p>
           </div>
            <div class="column2 column">
-            <input type="checkbox" class="lip" v-model="message.done" checked="message.done" disabled/>
+            <input type="checkbox" class="lip" v-model="reservation.done" checked="reservation.done" disabled/>
           </div>
           <div class="column3 column">
-            <p class="lip">{{message.created}}</p>
+            <p class="lip">{{reservation.created}}</p>
           </div>
           <div class="column4 column">
-            <i
-              class="material-icons tooltip"
-              @click="showScheduleForm(message.messageId)"
-            title="Create schedule">assignment_turned_in</i>
-            <i class="material-icons" @click="showTriggerForm(message.messageId)" title="Create trigger">assistant</i>
-            <i class="material-icons" @click="editReservation(message.id)" title="Edit reservation">create</i>
-            <i class="material-icons" @click="deleteReservation(message.id)" title="Delete reservation">delete</i>
+            <i class="material-icons" @click="editReservation(reservation.id)" title="Edit reservation">create</i>
+            <i class="material-icons" @click="deleteReservation(reservation.id)" title="Delete reservation">delete</i>
           </div>
         </li>
       </ul>
     </div>
     <div id="footer">
-      <button id="footer-btn" @click="toggleMenu" v-click-outside="hideMenu">{{ this.rowSize }} Rows</button>
-      <div id="menu" v-show="menu">
-        <div
-          class="menu-article"
-          v-for="rowValue in rowSizesValue"
-          :key="rowValue"
-          @click="setRows(rowValue)"
-        >{{ rowValue }}</div>
-      </div>
 
       <div class="text-xs-center">
-        <v-pagination v-model="page" :length="pagesSize" :total-visible="5" @input="changePage"></v-pagination>
+        <v-pagination></v-pagination>
       </div>
     </div>
 
-    <button @click="showMessageForm" id="btn">+</button>
+    <button @click="showReservationForm" id="btn">+</button>
 
-    <div
+     <div
       id="notification"
       v-show="showNotificationValue"
       :class="{redBorder: errorOccured, greenBorder: !errorOccured}"
@@ -103,25 +94,17 @@ import {
   USER_ID,
   CURRENT_USER_ROLE
 } from "../constants/index.js";
-import { USER_EMAIL, LANGUAGE } from "../constants/index.js";
-import { ACCESS_TOKEN, MESSAGES } from "../constants/index.js";
+import { USER_EMAIL } from "../constants/index.js";
+import { ACCESS_TOKEN } from "../constants/index.js";
 import axios from "axios";
 import ClickOutside from "vue-click-outside";
 import { setTimeout } from "timers";
 export default {
-  name: "messages",
+  name: "reservations",
   data() {
     return {
-      messagesData: [],
-      rowSize: 20, //Number of rows
-      pagesSize: 1, //Number of pages
-      page: 1, //current active page
-      menu: false,
-      rowSizesValue: [5, 10, 20],
-      sortType: "desc",
-      dateSort: true,
-      sortByValue: "createdAt",
-      textNoti: "",
+      reservationsData: [],
+    textNoti: "",
       errorOccured: false,
       showNotificationValue: false,
       uri:"",
@@ -134,7 +117,7 @@ export default {
     };
     await axios
 
-      .get(API_BASE_URL + "/korisnik/me", {
+      .get(API_BASE_URL + "/user/me", {
         headers: headers
       })
       .then(response => {
@@ -152,40 +135,12 @@ export default {
   
     this.create();
   },
-  filters: {
-    shortDate(value) {
-      let dateVar = new Date(value);
-      let dataVar2 = dateVar.toDateString();
-      let data = dataVar2.substring(4);
-      return data;
-    }
-  },
   methods: {
-    async reloadMessages() {
-      let headers = {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
-      };
-      var pg = this.page - 1;
-      try {
-        const res = await axios.get(
-          API_BASE_URL +
-            "/korisnik/reservation/employee/" + localStorage.getItem(USER_ID)
-            ,
-          { headers: headers }
-        );
-
-        if (res.data.totalPages < this.page)
-          this.changePage(res.data.totalPages);
-
-        this.messagesData = res.data;
-        this.pagesSize = res.data.totalPages;
-      } catch (err) {
-        this.showNotification(-1);
-      }
+    async reloadReservations() {
+      this.create();
     },
 
-    showNotification(value) {
+   showNotification(value) {
       if (value == -1) {
         this.textNoti = "Some error have occured";
         this.errorOccured = true;
@@ -193,7 +148,7 @@ export default {
         this.errorOccured = false;
         this.textNoti = "Succes";
       }
-      this.showNoti = !this.showNotificationValue;
+      this.showNotificationValue = !this.showNotificationValue;
       setTimeout(this.closeNotification, 1500);
       {
       }
@@ -203,61 +158,37 @@ export default {
       this.showNotificationValue = false;
     },
 
-    showMessageForm() {
-      this.$router.push("/dashboard/rezervacije/newReservation");
-    },
-
-    showTriggerForm(id) {
-      this.$router.push("/dashboard/messages/newTrigger/" + id);
-    },
-
-    showScheduleForm(id) {
-      this.$router.push("/dashboard/messages/newSchedule/" + id);
+    showReservationForm() {
+      if(localStorage.getItem(CURRENT_USER_ROLE)=="ADMIN" || localStorage.getItem(CURRENT_USER_ROLE)=="EMPLOYEE"){
+      this.$router.push("/dashboard/reservations/newReservation");
+      }
     },
 
     async editReservation(id) {
-      this.$router.push("/dashboard/rezervacije/updateReservation/" + id);
+       if(localStorage.getItem(CURRENT_USER_ROLE)=="ADMIN" || localStorage.getItem(CURRENT_USER_ROLE)=="EMPLOYEE"){
+      this.$router.push("/dashboard/reservations/updateReservation/" + id);
+       }
     },
 
     async deleteReservation(id) {
-      let headers = {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
-      };
-
-      try {
-        const res = await axios.delete(
-          API_BASE_URL +
-            "/korisnik/rezervacija/"+id,
-          { headers: headers }
+       if(localStorage.getItem(CURRENT_USER_ROLE)=="ADMIN" || localStorage.getItem(CURRENT_USER_ROLE)=="EMPLOYEE"){
+           let headers = {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
+    };
+      await axios.delete(API_BASE_URL + "/user/reservation/" + id,  { headers: headers })
+        .then(
+          response => {
+            console.log(response);
+            this.showNotification(200, response);
+            this.create();
+          },
+          error => {
+            console.log(error.message);
+            this.showNotification(-1, error.message);
+          }
         );
-
-        this.showNotification(200);
-        this.create();
-      } catch (err) {
-        this.showNotification(-1);
-      }
-    },
-
-    toggleMenu() {
-      this.menu = !this.menu;
-    },
-
-    hideMenu() {
-      this.menu = false;
-    },
-
-    setRows(value) {
-      if (value != this.rowSize) {
-        this.rowSize = value;
-        this.reloadMessages();
-      }
-      this.menu = !this.menu;
-    },
-
-    changePage(nextPage) {
-      this.page = nextPage;
-      this.reloadMessages(nextPage - 1);
+       }
     },
 
     async create() {
@@ -266,23 +197,14 @@ export default {
         Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
       };
       console.log(localStorage.getItem(CURRENT_USER_ROLE));
-      //roles
-   /*   if(localStorage.getItem(CURRENT_USER_ROLE)=="EMPLOYEE"){
-         uri="/korisnik/reservation/employee/" + localStorage.getItem(USER_ID);
-      }
-      else if(localStorage.getItem(CURRENT_USER_ROLE)=="ADMIN"){
- uri="/korisnik/reservation/admin";
-    }
-    else{
-       uri="/korisnik/reservation/"  + localStorage.getItem(USER_ID)
-    }*/
-     
-         const res = await axios.get(
+      
+      if(localStorage.getItem(CURRENT_USER_ROLE)=="EMPLOYEE"){
+        await axios.get(
           API_BASE_URL +
-             "/korisnik/reservation/employee/" + localStorage.getItem(USER_ID),
+             "/user/reservation/employee/" + localStorage.getItem(USER_ID),
           { headers: headers }
         ).then((response) => {
-           this.messagesData = response.data;
+           this.reservationsData = response.data;
               console.log(response);
  this.showNotification(200,response);
  this.exit();
@@ -290,21 +212,43 @@ export default {
   console.log(error.message);
   this.showNotification(-1,error.message);
 });
+      }
+      else if(localStorage.getItem(CURRENT_USER_ROLE)=="USER"){
+           await axios.get(
+          API_BASE_URL +
+             "/user/reservation/guest/" + localStorage.getItem(USER_ID),
+          { headers: headers }
+        ).then((response) => {
+           this.reservationsData = response.data;
+              console.log(response);
+ this.showNotification(200,response);
+ this.exit();
+}, (error) => {
+  console.log(error.message);
+  this.showNotification(-1,error.message);
+});
+      }
+      else if (localStorage.getItem(CURRENT_USER_ROLE)=="ADMIN"){
+         await axios.get(
+          API_BASE_URL +
+             "/user/reservation/all",
+          { headers: headers }
+        ).then((response) => {
+           this.reservationsData = response.data;
+              console.log(response);
+ this.showNotification(200,response);
+ this.exit();
+}, (error) => {
+  console.log(error.message);
+  this.showNotification(-1,error.message);
+});
+      }
     
-    
-  },
-
-    sortBy(value) {
-      if (this.sortType == "desc") this.sortType = "asc";
-      else this.sortType = "desc";
-
-      this.sortByValue = value;
-      this.reloadMessages();
-    }
   },
 
   directives: {
     ClickOutside
+  }
   }
 };
 </script>
@@ -371,7 +315,7 @@ h1 {
   background-color: lightgray;
 }
 
-#messages {
+#reservations {
   padding: 20px;
   padding-bottom: 0px;
   height: 100vh;

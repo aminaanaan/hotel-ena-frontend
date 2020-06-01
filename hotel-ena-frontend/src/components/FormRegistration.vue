@@ -16,9 +16,9 @@
            <label class="la">Surname</label>
           <input type="text" name="field1" id="field1" v-model="surname" placeholder="Enter your Surname" required/>
              <label class="la">Email</label>
-          <input type="text" name="field1" id="field1" v-model="email" placeholder="Enter your email" required/>
+          <input type="text" name="field1" id="field1" v-model="email" placeholder="Enter your Email" required/>
  <label class="la">Password</label>
-          <input type="password" name="field1" id="field1" v-model="password" placeholder="Enter your password" required/>
+          <input type="password" name="field1" id="field1" v-model="password" placeholder="Enter your Password" required/>
  <input type="button" value="Save" id="submit" @click="save" />
           <input type="button" value="Cancel" @click="exit" id="cancle" class="input-options" />
         </div>
@@ -55,8 +55,6 @@ export default {
   name: "registration",
   data() {
     return {
-      title: "",
-      choiceList: [],
       password:"",
       username:"",
       name:"",
@@ -111,24 +109,6 @@ export default {
   console.log(error.message);
   this.showNotification(-1,error.message);
 });
-           /* if(res.data.success==true){
-              this.showNotification(200);
-            this.$router.push("/login")
-            }
-            else {
-              console.log("enters")
-              this.ifError=true;
-              this.error=res.data.apierror;
-
-      this.$router.push("/error");
-    }
-            this.$emit("show-notification");
-          } catch (err) {
-            
-        this.showNotification(-1);
-      
-            this.$emit("show-notification", -1);
-          }*/
     },
    
   }

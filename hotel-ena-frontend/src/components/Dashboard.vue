@@ -9,7 +9,7 @@
           <div id="usersdata" v-on="on">
             <i id="icon" class="material-icons">arrow_drop_down</i>
             <button id="picture">
-              <img id="pic" class="img-circle" width="80" height="70" />
+              <img id="pic" class="img-circle" width="80" height="70" src="../assets/User-blue.png"/>
             </button>
             <div id="credentials">
               <h3 id="name"></h3>
@@ -33,7 +33,7 @@
     <div id="dashboard">
       <div id="table">
         <router-view
-          @change-language="Translate()"
+         
         ></router-view>
       </div>
     </div>
@@ -41,17 +41,11 @@
 </template>
 
 <script>
-import { API_BASE_URL, USER_LANGUAGE, SETTINGS } from "../constants/index.js";
+import { API_BASE_URL } from "../constants/index.js";
 import { USER_EMAIL } from "../constants/index.js";
 import {
-  CURRENT_USER_ROLE,
-  THEME_ID,
-  USER_THEME,
-  THEME,
-  USER_NAME,
-  USER_PIC,
-  LOGOUT,
-  PROFILE
+  CURRENT_USER_ROLE, 
+  USER_NAME,USER_ID
 } from "../constants/index.js";
 import { ACCESS_TOKEN } from "../constants/index.js";
 import navigation from "./Navigation.vue";
@@ -74,19 +68,14 @@ export default {
       Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
     };
     await axios
-      .get(API_BASE_URL + "/korisnik/me", {
+      .get(API_BASE_URL + "/user/me", {
         headers: headers
       })
       .then(response => {
         localStorage.setItem(USER_EMAIL, response.data.email);
         localStorage.setItem(USER_NAME, response.data.name);
-        localStorage.setItem(USER_PIC, response.data.imageUrl);
         localStorage.setItem(CURRENT_USER_ROLE, response.data.role);
-        localStorage.setItem(USER_THEME, response.data.userSettings.theme);
-        localStorage.setItem(
-          USER_LANGUAGE,
-          response.data.userSettings.language
-        );
+       localStorage.setItem(USER_ID,response.data.id);
         
       })
       .catch(err => {
@@ -101,27 +90,15 @@ export default {
       if (index == 0) {
         this.$router.push("/profile");
       } else if (index == 1) {
-        this.$router.push("/settings");
-      } else if (index == 2) {
         localStorage.setItem(ACCESS_TOKEN, "");
         localStorage.setItem(CURRENT_USER_ROLE, "");
-        localStorage.setItem(USER_THEME, "");
         localStorage.setItem(CURRENT_USER_ROLE, "");
-        localStorage.setItem(USER_EMAIL, "");
-        localStorage.setItem(USER_LANGUAGE, "");
+        localStorage.setItem(USER_EMAIL, "");     
         localStorage.setItem(USER_NAME, "");
-        localStorage.setItem(USER_PIC, "");
         this.$router.push("/login");
       }
     },
-    Translate() {
-      if (localStorage.getItem(USER_LANGUAGE) == "fr") {
-        this.items[0].title = localStorage.getItem(PROFILE);
-        this.items[1].title = localStorage.getItem(SETTINGS);
-        this.items[2].title = localStorage.getItem(LOGOUT);
-      }
-      navigation.methods.Translate();
-    }
+    
   }
 };
 </script>

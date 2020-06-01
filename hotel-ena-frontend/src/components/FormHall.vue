@@ -1,49 +1,44 @@
 <template>
-  <div id="formaU">
+  <div id="FormHall" v-if="dataReady">
+        <router-view  @show-notification="showNotification($event)"></router-view>
     <div id="form-style-10">
       <form id="forma">
         <div id="section">
           <p>
-            <span id="createUser"> User</span>
-
-            <label id="close-icon" @click="exit" style="font-size: 20px">X</label>
+            
+            <span id="formTitle">Hall</span>
           </p>
         </div>
+        <label class="la">Number Of People</label>
         <div id="inner-wrap">
-          <label class="la">Email</label>
           <input
+            autocomplete="off"
             type="text"
             name="field1"
-            v-model="email"
-            
-            :class="{errorBorder: emailError, noErrorBorder: !emailError}"
-            placeholder="New user email"
-            autocomplete="off"
-          />
-           <label class="la">Password</label>
-          <input
-            type="password"
-            name="field1"
-            v-model="password"
+            placeholder="New hall number of people"
+            v-model="numOfPpl"
             id="field1"
-            :class="{errorBorder: emailError, noErrorBorder: !emailError}"
-            placeholder="New user password"
-            autocomplete="off"
+            :class="{errorBorder: showTitleError, noErrorBorder: !showTitleError}"
           />
-          <span v-show="emailError">Email address is not valid</span>
+
           <br />
-          <label class="la">Role</label>
+          <br />
 
-          <select
-            id="field2"
-            v-model="roleType"
-            :class="{errorBorder: roleError, noErrorBorder: !roleError}"
-          >
-            <option disabled selected>{{roleType}}</option>
+          
+         <label class="container">
+            <p class="checkText">Busy</p>
 
-            <option v-for="rol in role" :key="rol.name">{{ rol }}</option>
-          </select>
-          <span v-show="roleError">User role is required</span>
+            <input
+              type="checkbox"
+              checked="busy"
+              v-model="busy"
+            />
+            <span class="checkmark"></span>
+          </label>  
+          <br />
+
+          <br />
+          <br />
 
           <input type="button" value="Save" @click="save" id="submit" class="input-options" />
           <input type="button" value="Cancel" @click="exit" id="cancle" class="input-options" />
@@ -55,132 +50,127 @@
 
 <script>
 import {
-  ACCESS_TOKEN,
-  API_BASE_URL
+  ACCESS_TOKEN
 } from "../constants/index.js";
-
 import axios from "axios";
+import DatePicker from "vue2-datepicker";
+import { API_BASE_URL } from "../constants";
+
 const headers = {
   "Content-Type": "application/json",
   Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
 };
 
 export default {
-  name: "formaU",
+  name: "FormHall",
+
+  components: { DatePicker },
+
   data() {
     return {
-      email: "",
-      role: ["EMPLOYEE","USER"],
-      roleType: "",
-      emailError: false,
-      roleError: false,
-      liveValidation: false,
-      invalid: false,
-      formType: "Create",
-      rule: /.*\@\w{1,}\.\w{1,}/,
-      password:"",
+      numOfPpl:"",
+      liveValidation: false,              
+busy:false,
+dataReady:false,
+  textNoti: "",
+        showNotificationValue: false,
+         error:"",
+      errorOccured: false,
+      showNoti: false,
     };
   },
+
   mounted: async function() {
-  
-  },
+   if (this.$route.params.id != null) {
+      await axios.get(
+          API_BASE_URL + "/user/reservation/hall/" + this.$route.params.id,
+          {headers:headers}
+        ).then((res)=> {
+        this.numOfPpl = res.data.numberOfPeople;
+        //console.log(this.numOfBeds);
+        this.busy=res.data.busy;       
+     console.log(res);
+ this.showNotification(200,res);
+ this.dataReady=true;
+}, (error) => {
+  console.log(error.message);
+  this.showNotification(-1,error.message);
+  this.dataReady=true;
+});;
+  }
+   else{
+       this.dataReady=true;
+     }
+  }
+   ,
+
   methods: {
+     closeNotification(){
+      this.showNotificationValue = false;
+    },
+
+       showNotification(value,text) {
+      if (value == -1) {
+        this.textNoti = text;
+        this.errorOccured = true;
+      } else {
+        this.errorOccured = false;
+        this.textNoti = text;
+      }
+      this.showNoti = !this.showNoti;
+      setTimeout(this.closeNoti, 1500);
+      {
+      }
+    },
     exit() {
+      this.$emit("reload-halls");
       this.$router.go(-1);
     },
     async save() {
-      let headers = {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
-      };
-      this.liveValidation = true;
-      if (this.check_email(this.email) == false) this.invalid = true;
-      if (this.check_roleType(this.roleType) == false) this.invalid = true;
-      if (this.invalid == true) {
-        this.invalid = false;
-        return;
-      } else {
-        if (this.$route.params.id == null) {
-          try {
+      if (this.$route.params.id == null) {
+         
             await axios.post(
-              API_BASE_URL + "/user",
+              API_BASE_URL + "/user/reservation/hall",
               {
-                email: this.email,
-                role: this.roleType,
-                password:this.password
+                
+              
+                numberOfPeople: this.numOfPpl,
+                busy: this.busy,
+               
               },
               { headers: headers }
-            );
-          } catch (err) {
-            this.$emit("show-notification", -1);
-            this.$router.go(-1);
-            return;
-          }
+            ).then((response) => {
+              console.log(response);
+ this.showNotification(200,response);
+ this.exit();
+}, (error) => {
+  console.log(error.message);
+  this.showNotification(-1,error.message);
+});;
+         
+          
         } else {
-          try {
-            await axios.get(
-              API_BASE_URL + "/user/all" + this.$route.params.id,
-              { title: this.title, text: this.text },
-              { headers: headers }
-            );
-          } catch (err) {
-            this.$emit("show-notification", -1);
-            this.$router.go(-1);
-            return;
-          }
-        }
-        this.$emit("reload-users");
-        this.$emit("show-notification");
-        this.$router.go(-1);
-      }
-    },
-    async create() {
-      let headers = {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
-      };
-      try {
-        const res = await axios.get(
-          API_BASE_URL + "/user/all/" + this.$route.params.id, 
-          { headers: headers }
-        );
-        this.title = res.data.title;
-        this.text = res.data.text;
-      } catch (err) {
-        this.$emit("show-notification", -1);
-      }
-    },
-
-    check_email(value) {
-      if (!this.rule.test(value)) {
-        this.emailError = true;
-        return false;
-      } else {
-        this.emailError = false;
-        return true;
-      }
-    },
-
-    check_roleType(value) {
-      if (this.roleType == "New user role") {
-        this.roleError = true;
-        return false;
-      } else {
-        this.roleError = false;
-        return true;
-      }
+            await axios.put(
+              API_BASE_URL + "/user/reservation/hall/" + this.$route.params.id,
+                {
+              
+               numberOfPeople: this.numOfPpl,
+                busy: this.busy,
+               
+              },
+                 { headers: headers }
+            ).then((response) => {
+              console.log(response);
+ this.showNotification(200,response);
+ this.exit();
+}, (error) => {
+  console.log(error.message);
+  this.showNotification(-1,error.message);
+});;
+      
     }
-  },
-  watch: {
-    email(value) {
-      this.email = value;
-      if (this.liveValidation == true) this.check_email(value);
-    },
-
-    roleType(value) {
-      this.triggerType = value;
-      if (this.liveValidation == true) this.check_roleType(value);
     }
+
   }
 };
 </script>
@@ -189,12 +179,12 @@ export default {
 * {
   font-family: "Roboto", sans-serif;
 }
-#createUser{
+#formTitle{
   color: #4d4d4d;
 }
 #form-style-10 {
   width: 640px;
-  height: 580px;
+  height: auto;
   padding: 20px;
   position: absolute;
   top: 50%;
@@ -205,12 +195,34 @@ export default {
   box-sizing: border-box;
   display: block;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  z-index: 99;
+  z-index: 120;
+  padding-bottom: 50px;
+}
+
+#choicesList{
+  height: 130px;
+  overflow: auto;
+}
+
+.mx-input {
+  overflow: visible;
+}
+
+.mx-input-append {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+}
+
+.mx-datepicker {
+  width: 100%;
 }
 
 #form-style-10 #inner-wrap {
   display: block;
   padding: 20px;
+  padding-top: 0px;
   background: #fff;
   border-radius: 6px;
   margin-bottom: 15px;
@@ -241,7 +253,6 @@ export default {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   width: 100%;
-  height: 40%;
   padding: 8px;
   border-radius: 6px;
   -webkit-border-radius: 6px;
@@ -325,7 +336,6 @@ export default {
 #close-icon {
   display: inline;
   text-align: right;
-  float: right;
   margin: 0 20px 10px 0px;
 }
 
@@ -340,13 +350,30 @@ export default {
   background-color: white;
   position: relative;
   top: 23px;
-  left: 13px;
+  left: 30px;
   padding: 0px 7px;
 }
 
 .input-options {
   position: relative;
-  top: 100px;
+  top: 10px;
+}
+
+#form-style-10 #choiceButton {
+  float: right;
+  height: 30px;
+  width: 30px;
+  background-color: #0080ff;
+  color: white;
+  border-radius: 50%;
+  font-size: 25px;
+  line-height: 10px;
+  margin-right: 0px;
+  margin-left: 10px;
+}
+
+.disabledButton {
+  display: none;
 }
 
 .errorBorder {
@@ -357,8 +384,21 @@ export default {
   border: 1px inset rgba(0, 0, 0, 0.2);
 }
 
+#filed1 {
+  border: unset;
+}
+
 span {
   color: rgb(253, 38, 38);
   font-weight: 400;
+}
+
+.la2 {
+  position: relative;
+  top: 15px;
+  left: 15px;
+  background-color: white;
+  z-index: 1;
+  padding: 0px 4px;
 }
 </style>

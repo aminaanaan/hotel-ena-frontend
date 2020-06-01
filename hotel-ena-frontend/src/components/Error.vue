@@ -29,23 +29,12 @@ import { ACCESS_TOKEN } from "../constants/index.js";
 export default {
   name: "error",
   mounted: function() {
-
-     /* if (localStorage.getItem(USER_LANGUAGE) != "en") {
-      document.getElementsByTagName("H1").innerHTML=localStorage.getItem(ERROR);
-    }*/
-    if (localStorage.getItem(THEME) == "light") {
-      document.getElementById("error").style.backgroundColor = "white";
-    } else if (localStorage.getItem(THEME) == "dark") {
-      document.getElementById("error").style.backgroundColor = "black";
-    }
+  
         localStorage.setItem(ACCESS_TOKEN, "");
-        localStorage.setItem(CURRENT_USER_ROLE, "");
-        localStorage.setItem(THEME, "");
-        localStorage.setItem(CURRENT_USER_ROLE, "");
-        localStorage.setItem(USER_EMAIL, "");
-        //localStorage.setItem(USER_LANGUAGE, "");
+        localStorage.setItem(CURRENT_USER_ROLE, "");      
+        localStorage.setItem(USER_EMAIL, "");    
         localStorage.setItem(USER_NAME, "");
-        localStorage.setItem(USER_PIC, "");
+      
 
   },
   methods: {

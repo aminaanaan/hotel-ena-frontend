@@ -1,39 +1,44 @@
 <template>
-  <div class="tab">
+  <div class="tab" v-if="dataReady">
     <div id="logo" class="tablinks"></div>
-
-    <router-link to="/dashboard/rezervacije" class="router-link">
+    <router-link to="/dashboard/reservations" class="router-link">
       <button class="active">
         <v-icon color="white" style="margin-bottom: 10px">local_post_office</v-icon>
         <br />
-        <span>Rezervacije</span>
+        <span>Reservations</span>
       </button>
     </router-link>
 
-    <router-link to="/dashboard/racuni" class="router-link">
+    <router-link to="/dashboard/bills" class="router-link">
       <button>
         <v-icon color="white" style="margin-bottom: 10px">assignment_turned_in</v-icon>
 
         <br />
-        <span>Racuni</span>
+        <span>Bills</span>
       </button>
     </router-link>
 
   
 
-    <router-link to="/dashboard/poll" class="router-link">
+    <router-link to="/dashboard/rooms" class="router-link">
       <button>
         <v-icon color="white" size="32" style="margin-bottom: 10px">poll</v-icon>
 
         <br />
-        <span>Sobe</span>
+        <span>Rooms</span>
       </button>
     </router-link>
 
-   
+    <router-link to="/dashboard/halls" class="router-link">
+      <button>
+        <v-icon color="white" style="margin-bottom: 10px">assistant</v-icon>
+        <br />
+        <span>Halls</span>
+      </button>
+    </router-link>
 
     <router-link to="/dashboard/user" class="router-link">
-      <button id="usertab">
+      <button id="usertab" v-show="user">
         <v-icon color="white" size="32" style="margin-bottom: 10px">person</v-icon>
         <br />
         <span>Users</span>
@@ -44,10 +49,10 @@
 
 <script>
 import {
-  API_BASE_URL
+  API_BASE_URL, CURRENT_USER_ROLE, USER_ID
 } from "../constants/index.js";
 import {
-  USER_EMAIL
+  USER_EMAIL,USER_NAME
 } from "../constants/index.js";
 import { ACCESS_TOKEN } from "../constants/index.js";
 
@@ -56,36 +61,47 @@ import { async } from "q";
 
 export default {
   name: "navigation",
+ 
   data() {
     return {
       notificationNumber: 0,
-      userId: 0
+      userId: 0,
+       user:false,
+       dataReady:false
     };
   },
-  mounted: async function() {
+  async mounted() {
      let headers = {
       "Content-Type": "application/json",
       Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
     };
     await axios
-      .get(API_BASE_URL + "/korisnik/me", {
+      .get(API_BASE_URL + "/user/me", {
         headers: headers
       })
       .then(response => {
         localStorage.setItem(USER_EMAIL, response.data.email);
+        localStorage.setItem(USER_ID,response.data.id);
         localStorage.setItem(USER_NAME, response.data.name);
-        localStorage.setItem(USER_PIC, response.data.imageUrl);
         localStorage.setItem(CURRENT_USER_ROLE, response.data.role);
-        localStorage.setItem(USER_THEME, response.data.userSettings.theme);
-       
+        if (localStorage.getItem(CURRENT_USER_ROLE) == "ADMIN" || localStorage.getItem(CURRENT_USER_ROLE) == "EMPLOYEE") {
+          this.user=true;
+          console.log(localStorage.getItem(CURRENT_USER_ROLE));
+          this.dataReady=true;
+
+    }
+    else{
+       this.dataReady=true; 
+    }
         
       })
       .catch(err => {
         console.log(err);
       });
 
-    if (localStorage.getItem(CURRENT_USER_ROLE) != "ADMIN") {
-      document.getElementById("usertab").style.display = "none";
+    if (localStorage.getItem(CURRENT_USER_ROLE) == "ADMIN" || localStorage.getItem(CURRENT_USER_ROLE) == "EMPLOYEE" ) {
+      this.user=true;
+      
     }
  
     this.subscribeToNotification();
@@ -102,7 +118,7 @@ export default {
       this.source = null;
 
       await axios
-        .get(API_BASE_URL + "/korisnik/me", {
+        .get(API_BASE_URL + "/user/me", {
           headers: headers
         })
         .then(response => {

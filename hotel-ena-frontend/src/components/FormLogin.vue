@@ -1,9 +1,9 @@
 <template>
-  <div id="pollView">
+  <div id="formLogin">
     <div id="form-style-10">
       <form id="forma">
         <div id="section">
-          <p id="pollViewTitle">
+          <p id="formLoginTitle">
             Login
             <label id="close-icon" @click="exit" style="font-size: 20px">X</label>
           </p>
@@ -28,17 +28,11 @@ import { API_BASE_URL,ACCESS_TOKEN } from "../constants/index.js";
 
 import ClickOutside from "vue-click-outside";
 import { setTimeout } from "timers";
-/*const headers = {
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + //localStorage.getItem(ACCESS_TOKEN)
-};*/
 
 export default {
-  name: "pollView",
+  name: "formLogin",
   data() {
     return {
-      title: "",
-      choiceList: [],
       password:"",
       email:"",
     };
@@ -53,38 +47,21 @@ export default {
       this.$router.go(-1);
     },
     async save(){
- try {
-           const res= await axios.post(
+            await axios.post(
               API_BASE_URL + "/auth/login",
               {
               email:this.email,
               password:this.password
               },
-              //{ headers: headers }
-            );
-            if(res.status==200){
-            localStorage.setItem(ACCESS_TOKEN,res.data.accessToken)
-            this.$router.push("/dashboard/rezervacije")
-            }
-            else {
-      this.$router.push("/error");
-    }
-            this.$emit("show-notification");
-          } catch (err) {
-            this.$emit("show-notification", -1);
-          }
+            ).then((res)=> {
+        localStorage.setItem(ACCESS_TOKEN,res.data.accessToken)
+            this.$router.push("/navigation");
+}, (error) => {
+  this.$router.push("/error");
+});
+    
     },
-   /* async create() {
-      try {
-        const res = await axios.get(
-          API_BASE_URL + "/api/polls/" + this.$route.params.id
-        );
-        this.title = res.data.title;
-        this.choiceList = res.data.choiceList;
-      } catch (err) {
-        this.$emit("show-notification", -1);
-      }*/
-    //}
+  
   }
 };
 </script>

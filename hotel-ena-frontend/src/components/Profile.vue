@@ -5,7 +5,7 @@
     </div>
     <br />
     <div class="data" id="profile">
-      <img id="pic1" class="img-circle" width="100" height="100" />
+      <img id="pic1" class="img-circle" width="100" height="100" src="../assets/User-blue.png" />
       <br />
       <br />
       <p>
@@ -18,15 +18,8 @@
       </p>
       <p id="email1"></p>
       <br />
-      <p>
-        <strong>Language:</strong>
-      </p>
-      <p id="language1"></p>
+     
       <br />
-      <p>
-        <strong>Theme:</strong>
-      </p>
-      <p id="theme1"></p>
       <br />
       <p>
         <strong>Role:</strong>
@@ -41,19 +34,8 @@ import {
   ACCESS_TOKEN,
   API_BASE_URL,
   USER_EMAIL,
-  LANGUAGE,
-  USER_THEME,
   CURRENT_USER_ROLE,
-  NAME,
-  USER_LANGUAGE,
-  THEMEPARAGRAPH,
-  ROLE,
-  PROFILE,
-  COLOR,
-  LOGOUT,
-  THEME,
   USER_NAME,
-  USER_PIC
 } from "../constants/index.js";
 export default {
   name: "profil",
@@ -64,58 +46,20 @@ export default {
     document.getElementById("name1").innerHTML = localStorage.getItem(
       USER_NAME
     );
-    document.getElementById("pic1").src = localStorage.getItem(USER_PIC);
-    document.getElementById("language1").innerHTML = localStorage.getItem(
-      "language" + localStorage.getItem(USER_LANGUAGE).toUpperCase()
-    );
-    document.getElementById("theme1").innerHTML = localStorage.getItem(
-      USER_THEME
-    );
     document.getElementById("role1").innerHTML = localStorage.getItem(
       CURRENT_USER_ROLE
     );
-    if (localStorage.getItem(USER_THEME) == "Light") {
-      this.$emit("change-light");
-      document.getElementById("profile1").style.backgroundColor = "white";
-      document.getElementById("profile1").style.color = "black";
-    } else if (localStorage.getItem(USER_THEME) == "Dark") {
-      this.$emit("change-dark");
-      document.getElementsByTagName("H1")[0].style.color="#f1f1f1";
-      document.getElementById("profile").style.backgroundColor = "#191919";
-      document.getElementById("profile").style.color = "black";
-      //document.getElementById("profile").style.backgroundColor = "black";
-      document.getElementById("header").style.backgroundColor = "black";
-      document.getElementById("table").style.backgroundColor = "black";
-      document.getElementById("profile").style.color = "white";
-    }
-    if (localStorage.getItem(USER_LANGUAGE) != "en") {
-      document.getElementsByTagName("H1")[0].innerHTML = localStorage.getItem(
-        PROFILE
-      );
-      document.getElementsByTagName("P")[4].innerHTML =
-        localStorage.getItem(NAME) + ":";
-      document.getElementsByTagName("P")[8].innerHTML =
-        localStorage.getItem(LANGUAGE) + ":";
-      document.getElementsByTagName("P")[10].innerHTML = localStorage.getItem(
-        THEME
-      );
-      document.getElementsByTagName("P")[12].innerHTML =
-        localStorage.getItem(ROLE) + ":";
-      document.getElementById("submit").innerHTML = localStorage.getItem(
-        LOGOUT
-      );
-    }
   },
   methods: {
     signOut() {
       localStorage.setItem(ACCESS_TOKEN, "");
       localStorage.setItem(CURRENT_USER_ROLE, "");
-      localStorage.setItem(THEME, "");
+    
       localStorage.setItem(CURRENT_USER_ROLE, "");
       localStorage.setItem(USER_EMAIL, "");
-      localStorage.setItem(USER_LANGUAGE, "");
+     
       localStorage.setItem(USER_NAME, "");
-      localStorage.setItem(USER_PIC, "");
+     
       alert("You're safely logged out!");
       this.$router.push("/login");
     }
@@ -133,6 +77,9 @@ export default {
   padding-bottom: 0px;
   height: auto;
   background-color: #f1f1f1;
+}
+#pic1{
+  background-image: url("../assets/User-blue.png");
 }
 p {
   font-size: 16.8px;

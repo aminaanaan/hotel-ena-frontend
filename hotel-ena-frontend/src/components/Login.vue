@@ -6,53 +6,42 @@
       <div id="right-content">
         <a id="btn btn-block social-btn google" href>
           <div id="google-sign"></div>
-          </a>
-      <div>
-      <br />
-      <br />
-     
+        </a>
+        <div>
+          <br />
+          <br />
+        </div>
+        <button id="button" class="btn btn-block btn-primary" @click="showLoginForm">Login</button>
+        <br />
+        <button id="button2" class="btn btn-block btn-primary" @click="showRegisterForm">Sign Up</button>
+      </div>
     </div>
-            
-                    <button id="button"  className="btn btn-block btn-primary" @click="showLoginForm"> Login </button>
-<br>
-                     <button id="button2"  className="btn btn-block btn-primary" @click="showRegisterForm"> Sign Up </button>
-                </div>
 
-                 
-            
-                   
-              
-                
-         </div>
-   
     <div id="left">
-     <h1> Hotel Ena Application </h1>
-    <div>
-     
-  </div>
+      <h1>Hotel Ena Application</h1>
+      <div></div>
       <br />
       <br />
-     
     </div>
   </div>
 </template>
 
 <script>
-import { GOOGLE_AUTH_URL,API_BASE_URL } from "../constants/index.js";
+import { GOOGLE_AUTH_URL, API_BASE_URL } from "../constants/index.js";
 export default {
   name: "login",
-   data() {
+  data() {
     return {
       email: "",
-      password:"",
-      };
+      password: ""
+    };
   },
   methods: {
-    showLoginForm(){
+    showLoginForm() {
       console.log("enters");
       this.$router.push("/loginForm");
     },
-    showRegisterForm(){
+    showRegisterForm() {
       console.log("enters");
       this.$router.push("/registerForm");
     }
@@ -70,59 +59,57 @@ export default {
 #login {
   height: 100vh;
 }
-#button{
-  color:grey;
+#button {
+  color: grey;
   background: #fff;
-   height: 50px;
+  height: 50px;
   width: 300px;
-    background-position: center;
+  background-position: center;
   background-size: cover;
 }
-#button2{
-  color:grey;
+#button2 {
+  color: grey;
   background: #fff;
-   height: 50px;
+  height: 50px;
   width: 300px;
-    background-position: center;
+  background-position: center;
   background-size: cover;
 }
-#google-sign{
+#google-sign {
   height: 50px;
   width: 300px;
   background-image: url("../assets/google-signin.png");
   background-position: center;
   background-size: cover;
 }
-#button:hover{
+#button:hover {
   height: 60px;
-  
 }
-#button2:hover{
+#button2:hover {
   height: 60px;
-
 }
-#google-sign:hover{
+#google-sign:hover {
   height: 60px;
 }
 .login-container {
-    text-align: center;
+  text-align: center;
 }
-.form-control{
-  border:2px solid grey;
+.form-control {
+  border: 2px solid grey;
 }
-.form-item{
+.form-item {
   width: 200px;
 }
 .login-content {
-    background: #fff;
-    box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
-    border-radius: 2px;
-    width: 500px;
-    display: inline-block;
-    margin-top: 30px;
-    vertical-align: middle;
-    position: relative;    
-    padding: 35px;
+  background: #fff;
+  box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+  border-radius: 2px;
+  width: 500px;
+  display: inline-block;
+  margin-top: 30px;
+  vertical-align: middle;
+  position: relative;
+  padding: 35px;
 }
 
 #right {
@@ -135,7 +122,7 @@ export default {
 }
 
 #right-content {
-  width:30%;
+  width: 30%;
   position: absolute;
   font-size: 20px;
   right: 15%;
@@ -207,7 +194,6 @@ i:hover {
 }
 
 #logo {
-  background-image: url("../assets/nsoft-logo.png");
   background-position: center;
   background-size: cover;
   height: 120px;

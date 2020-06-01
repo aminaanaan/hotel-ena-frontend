@@ -1,54 +1,35 @@
 <template>
   <div id="formaM" v-if="dataReady">
-     <router-view  @show-notification="showNotification($event)"></router-view>
+    <router-view @show-notification="showNotification($event)"></router-view>
     <div id="form-style-10">
       <form id="forma">
         <div id="section">
           <p>
-            <span id="formTitle"> Reservation</span>
-           
+            <span id="formTitle">Room</span>
           </p>
         </div>
 
         <div id="inner-wrap">
-          <label>User Id</label>
+          <label :class="{errorText: showTitleError}">Number of Beds</label>
           <div>
-          <input
-          
-            type="text"
-            name="field1"
-            v-model="userId"
-            value="userId"
-            id="field1"
-            
-          /> 
+            <input
+              type="text"
+              name="field1"
+              v-model="numOfBeds"
+              value="numOfBeds"
+              id="field1"
+              :class="{errorBorder: showTitleError}"
+            />
           </div>
           <br />
-         
 
-          <label >Valid From</label>
-          <input type="date" v-model="validFrom" /> 
-           <label >Valid To</label>
-          <input type="date" v-model="validTo" />
-            
-        <div v-if="create">
-           <label >Cost</label>
-         <input type="text" v-model="cost" />
-        </div> 
-          <label >Room Id</label>
-         <input type="text" v-model="roomId" /> 
-          <label >Hall Id</label>
-         <input type="text" v-model="hallId" />
           <label class="container">
-            <p class="checkText">Done</p>
+            <p class="checkText">Busy</p>
 
-            <input
-              type="checkbox"
-              checked="done"
-              v-model="done"
-            />
+            <input type="checkbox" checked="busy" v-model="busy" />
             <span class="checkmark"></span>
           </label>
+
           <br />
           <br />
           <input type="button" value="Save" @click="save" id="submit" />
@@ -76,10 +57,7 @@
 </template>
 
 <script>
-import {
-  ACCESS_TOKEN, USER_ID,
- 
-} from "../constants/index.js";
+import { ACCESS_TOKEN, USER_ID } from "../constants/index.js";
 import axios from "axios";
 
 import { API_BASE_URL } from "../constants";
@@ -89,70 +67,61 @@ const headers = {
 };
 
 export default {
-  name: "FormReservation",
+  name: "FormRoom",
   data() {
     return {
-      validTo:"",
-      validFrom:"",
-      userId:"",
-       textNoti: "",
-        showNotificationValue: false,
-         error:"",
-         cost:"",
+      validTo: "",
+      numOfBeds: "",
+      textNoti: "",
+      showNotificationValue: false,
+      error: "",
       errorOccured: false,
       showNoti: false,
-      dataReady:false,
-      done:false,
-      roomId:"",
-      hallId:"",
-      create:false
+      dataReady: false,
+      busy: false,
+      racunId: "",
+      sobaentityId: "",
+      salaentityId: ""
     };
   },
 
   async mounted() {
-        const headers = {
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
-};
-     if (this.$route.params.id != null) {
-      await axios.get(
-          API_BASE_URL + "/user/reservation/" + this.$route.params.id,
-            { headers: headers }
-        ).then((res)=> {
-        this.userId = res.data.userId;
-        console.log(this.userId);
-        this.validTo = res.data.validTo;
-        this.validFrom=res.data.validFrom;
-        this.done=res.data.done;
-        this.roomId=res.data.roomId;
-        this.hallId=res.data.hallId;
-     console.log(res);
- this.showNotification(200,res);
- this.dataReady=true;
-}, (error) => {
-  console.log(error.message);
-  this.showNotification(-1,error.message);
-  this.dataReady=true;
-});;
-     }
-     else{
-       this.create=true;
-       this.dataReady=true;
-     }
-   
+    if (this.$route.params.id != null) {
+      await axios
+        .get(
+          API_BASE_URL + "/user/reservation/room/" + this.$route.params.id,
+          {headers:headers}
+        )
+        .then(
+          res => {
+            this.numOfBeds = res.data.numOfBeds;
+            console.log(this.numOfBeds);
+            this.busy = res.data.busy;
+            console.log(res);
+            this.showNotification(200, res);
+            this.dataReady = true;
+          },
+          error => {
+            console.log(error.message);
+            this.showNotification(-1, error.message);
+            this.dataReady = true;
+          }
+        );
+    } else {
+      this.dataReady = true;
+    }
   },
-
 
   methods: {
     exit() {
-      this.$emit("reload-reservations");
+      this.$emit("reload-room");
       this.$router.go(-1);
     },
- closeNotification(){
+    closeNotification() {
       this.showNotificationValue = false;
     },
 
-       showNotification(value,text) {
+    showNotification(value, text) {
       if (value == -1) {
         this.textNoti = text;
         this.errorOccured = true;
@@ -166,69 +135,54 @@ export default {
       }
     },
 
-  
-
     async save() {
-          const headers = {
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
-};
-        if (this.$route.params.id == null) {
-         
-            await axios.post(
-              API_BASE_URL + "/user/reservation/" + localStorage.getItem(USER_ID) ,
-              {
-                
-                validTo: this.validTo,
-                validFrom: this.validFrom,
-                userId: this.userId,
-                done: this.done,
-                cost:this.cost,
-                roomId:this.roomId,
-                hallId:this.hallId,
-                createdBy:localStorage.getItem(USER_ID),
-              },
-              { headers: headers }
-            ).then((response) => {
+      if (this.$route.params.id == null) {
+        await axios
+          .post(
+            API_BASE_URL + "/user/reservation/room",
+            {
+              numOfBeds: this.numOfBeds,
+              busy: this.busy
+            },
+            { headers: headers }
+          )
+          .then(
+            response => {
               console.log(response);
- this.showNotification(200,response);
- this.exit();
-}, (error) => {
-  console.log(error.message);
-  this.showNotification(-1,error.message);
-});;
-         
-          
-        } else {
-              const headers = {
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
-};
-            await axios.put(
-              API_BASE_URL + "/user/reservation/" + this.$route.params.id,
-                {
-                createdBy: localStorage.getItem(USER_ID),
-                validTo: this.validTo,
-                validFrom: this.validFrom,
-                userId: this.userId,
-                done: this.done,
-                  roomId:this.roomId,
-                hallId:this.hallId,
-              },
-                 { headers: headers }
-            ).then((response) => {
+              this.showNotification(200, response);
+              this.exit();
+            },
+            error => {
+              console.log(error.message);
+              this.showNotification(-1, error.message);
+            }
+          );
+      } else {
+        await axios
+          .put(
+            API_BASE_URL +
+              "/user/reservation/room/" +
+              this.$route.params.id,
+            {
+              numOfBeds: this.numOfBeds,
+              busy: this.busy
+            },
+            { headers: headers }
+          )
+          .then(
+            response => {
               console.log(response);
- this.showNotification(200,response);
- this.exit();
-}, (error) => {
-  console.log(error.message);
-  this.showNotification(-1,error.message);
-});;
-      
-    }
+              this.showNotification(200, response);
+              this.exit();
+            },
+            error => {
+              console.log(error.message);
+              this.showNotification(-1, error.message);
+            }
+          );
+      }
     }
   }
-  
 };
 </script>
 
@@ -236,15 +190,14 @@ export default {
 * {
   font-family: "Roboto", sans-serif;
 }
-#formTitle{
+#formTitle {
   color: #4d4d4d;
 }
 #form-style-10 {
   width: 640px;
-  height: 740px;
+  height: 340px;
   padding: 20px;
   position: absolute;
-  text-align: left;
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
@@ -275,6 +228,7 @@ export default {
   width: 50px;
   height: 35px;
   border: 1px inset rgba(0, 0, 0, 0.2);
+  text-align: center;
   margin-right: 15px;
   line-height: 35px;
   border-radius: 7px;
@@ -296,6 +250,7 @@ export default {
   display: block;
   font: 13px Arial, Helvetica, sans-serif;
   margin-bottom: 15px;
+  text-align: left;
 }
 .container {
   display: block;
@@ -337,7 +292,6 @@ export default {
   left: 10px;
   z-index: 99;
   padding: 0px 5px;
-  text-align: left;
 }
 
 .checkText {
@@ -357,7 +311,7 @@ export default {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-text-align:left;
+  text-align: left;
   -webkit-box-flex: 1;
   -ms-flex: 1 1 100%;
   flex: 1 1 100%;
@@ -578,11 +532,11 @@ span {
 }
 
 label {
-  width:10%;
   position: relative;
   top: 20px;
   left: 13px;
   background-color: white;
+  display: inline;
   text-align: center;
   color: #888;
 }

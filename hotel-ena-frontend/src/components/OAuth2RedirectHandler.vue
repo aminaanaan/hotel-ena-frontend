@@ -12,7 +12,7 @@ export default {
 
     if (token) {
       localStorage.setItem(ACCESS_TOKEN, token);
-      this.$router.push("/dashboard/rezervacije");
+      this.$router.push("/navigation");
     } else {
       this.$router.push("/error");
     }

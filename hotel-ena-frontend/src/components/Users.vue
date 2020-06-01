@@ -52,15 +52,7 @@
     </div>
 
     <div id="footer">
-      <button id="footer-btn" @click="toggleMenu">{{ this.rowSize }} Rows</button>
-      <div id="menu" v-show="menu">
-        <div
-          class="menu-article"
-          v-for="rowValue in rowSizesValue"
-          :key="rowValue"
-          @click="setRows(rowValue)"
-        >{{ rowValue }}</div>
-      </div>
+    
 
       <div class="text-xs-center">
         <v-pagination v-model="page" :length="pagesSize" :total-visible="5" @input="changePage"></v-pagination>
@@ -89,21 +81,11 @@
 </template>
 
 <script>
-import { API_BASE_URL, NAME, ROLE, USER_LANGUAGE } from "../constants/index.js";
-import {
-  Current_User_Role,
-  THEME_ID,
-  USER_THEME,
-  USERS
-} from "../constants/index.js";
-import { User_Email } from "../constants/index.js";
+import { API_BASE_URL, NAME, ROLE, USER_LANGUAGE,CURRENT_USER_ROLE } from "../constants/index.js";
+
 import { ACCESS_TOKEN } from "../constants/index.js";
 import axios from "axios";
 import ClickOutside from "vue-click-outside";
-const headers = {
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
-};
 
 export default {
   name: "user",
@@ -126,39 +108,8 @@ export default {
   },
 
   mounted: function() {
-    let headers = {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
-    };
-    if (localStorage.getItem(USER_THEME) == "Light") {
-      this.$emit("change-light");
-      document.getElementById("header").style.backgroundColor = "white";
-      document.getElementById("divlist").style.backgroundColor = "white";
-    } else if (localStorage.getItem(USER_THEME) == "Dark") {
-      this.$emit("change-dark");
-       document.getElementsByTagName("H1")[0].style.color="#f1f1f1";
-      document.getElementById("user").style.color = "#f1f1f1";
-document.getElementById("footer").style.backgroundColor="#191919";
-      document.getElementById("divlist").style.backgroundColor="#4c4c4c";
-      document.getElementById("header").style.backgroundColor = "#191919";
-      document.getElementById("user").style.backgroundColor = "#191919";
-      document.getElementById("title-li").style.backgroundColor="#323232";
-      document.getElementById("title-li").style.color="#f1f1f1";
-      document.getElementsByTagName("H5")[0].style.color="#f1f1f1";
-       document.getElementsByTagName("H5")[1].style.color="#f1f1f1";
-        document.getElementsByTagName("H5")[2].style.color="#f1f1f1";
-    }
-    if (localStorage.getItem(USER_LANGUAGE) != "en") {
-      document.getElementsByTagName("H1")[0].innerHTML = localStorage.getItem(
-        USERS
-      );
-      document.getElementsByTagName("H5")[0].innerHTML = localStorage.getItem(
-        NAME
-      );
-      document.getElementsByTagName("H5")[2].innerHTML = localStorage.getItem(
-        ROLE
-      );
-    }
+    
+  
     this.create();
   },
   methods: {
@@ -202,104 +153,34 @@ document.getElementById("footer").style.backgroundColor="#191919";
     },
 
     async editUser(id) {
+      if(localStorage.getItem(CURRENT_USER_ROLE)=="ADMIN" || localStorage.getItem(CURRENT_USER_ROLE)=="EMPLOYEE"){
       this.$router.push("/dashboard/messages/updateUser/" + id);
+      }
     },
     async deleteUser(id) {
+      if(localStorage.getItem(CURRENT_USER_ROLE)=="ADMIN" || localStorage.getItem(CURRENT_USER_ROLE)=="EMPLOYEE"){
       let headers = {
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
       };
-      await axios.delete(API_BASE_URL + "/user/" + id,{headers:headers});
-      var pg = this.page - 1;
-      try {
-        //var res;
-        /*if (this.titleSort == true)
-          res = await axios.get(
-            API_BASE_URL +
-              "/user/getAllUsers?page=" +
-              pg +
-              "&size=" +
-              this.rowSize +
-              "&sort=title," +
-              this.sortType,
-            { headers: headers }
-          );
-        else if (this.textSort == true)
-          res = await axios.get(
-            API_BASE_URL +
-              "/user/getAllUsers?page=" +
-              pg +
-              "&size=" +
-              this.rowSize +
-              "&sort=text," +
-              this.sortType,
-            { headers: headers }
-          );
-        else
-          res = await axios.get(
-            API_BASE_URL +
-              "/user/getAllUsers?page=" +
-              pg +
-              "&size=" +
-              this.rowSize +
-              "&sort=createdAt," +
-              this.sortType,
-            { headers: headers }
-          );*/
- const res = await axios.get(
-          API_BASE_URL +
-            "/user/getAllUsers?page=" +
-            pg +
-            "&size=" +
-            this.rowSize +
-            "&sort=" +
-            this.sortByValue +
-            "," +
-            this.sortType,
-          { headers: headers }
-        );
-        if (res.data.numberOfElements == 0) {
-          if (this.page != 1) this.changePage(this.page - 1);
-        }
-        this.usersData = res.data.content;
-        if (res.data.totalPages == 0) this.pagesSize = 1;
-        else this.pagesSize = res.data.totalPages;
-        this.showNotification(200);
-      } catch (err) {
-        this.showNotification(-1);
+      await axios.delete(API_BASE_URL + "/user/" + id,{headers:headers}).then((response) => {
+              console.log(response);
+ this.showNotification(200,response);
+ this.create();
+}, (error) => {
+  console.log(error.message);
+  this.showNotification(-1,error.message);
+});
       }
     },
     async reloadUsers() {
-      let headers = {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
-      };
-      var pg = this.page - 1;
-      try {
-        const res = await axios.get(
-          API_BASE_URL +
-            "/user/getAllUsers?page=" +
-            pg +
-            "&size=" +
-            this.rowSize +
-            "&sort=" +
-            this.sortByValue +
-            "," +
-            this.sortType,
-          { headers: headers }
-        );
-
-        if (res.data.totalPages < this.page)
-          this.changePage(res.data.totalPages);
-
-        this.usersData = res.data.content;
-        this.pagesSize = res.data.totalPages;
-      } catch (err) {
-        this.showNotification(-1);
-      }
+      this.create();
+     
     },
     showUserForm() {
+      if(localStorage.getItem(CURRENT_USER_ROLE)=="ADMIN" || localStorage.getItem(CURRENT_USER_ROLE)=="EMPLOYEE"){
       this.$router.push("/dashboard/user/newUser");
+    }
     },
     
     async create() {
@@ -307,33 +188,39 @@ document.getElementById("footer").style.backgroundColor="#191919";
         "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
       };
-      try {
-        const res = await axios.get(
+   if (localStorage.getItem(CURRENT_USER_ROLE) == "ADMIN" ) {
+     
+      
+    
+        await axios.get(
           API_BASE_URL +
-            "/user/getAllUsers?page=0" +
-            "&size=" +
-            this.rowSize +
-            "&sort=" +
-            this.sortByValue +
-            "," +
-            this.sortType,
+            "/user/all",
           { headers: headers }
-        );
-        this.usersData = res.data.content;
-        if (res.data.totalPages == 0) this.pagesSize = 1;
-        else this.pagesSize = res.data.totalPages;
-        this.rowSize = res.data.size;
-      } catch (err) {
-        this.showNotification(-1);
-      }
-    },
-    sortBy(value) {
-      if (this.sortType == "desc") this.sortType = "asc";
-      else this.sortType = "desc";
-
-      this.sortByValue = value;
-      this.reloadUsers();
+        ).then((response) => {
+           this.usersData = response.data;
+              console.log(response);
+ this.showNotification(200,response);
+ this.exit();
+}, (error) => {
+  console.log(error.message);
+  this.showNotification(-1,error.message);
+});
+   }else if(localStorage.getItem(CURRENT_USER_ROLE) == "EMPLOYEE") {
+       await axios.get(
+          API_BASE_URL +
+            "/user/guests",
+          { headers: headers }
+        ).then((response) => {
+           this.usersData = response.data;
+              console.log(response);
+ this.showNotification(200,response);
+ this.exit();
+}, (error) => {
+  console.log(error.message);
+  this.showNotification(-1,error.message);
+   });
     }
+    },
   },
   directives: {
     ClickOutside

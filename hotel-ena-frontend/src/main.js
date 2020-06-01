@@ -2,12 +2,12 @@ import Vue from 'vue'
 import './plugins/vuetify'
 import VueRouter from "vue-router"
 import App from './App.vue'
-import messages from "./components/Reservations.vue"
-import schedules from "./components/Racuni.vue"
-import triggers from "./components/Triggers.vue"
+import reservations from "./components/Reservations.vue"
+import bills from "./components/Bills.vue"
+import sale from "./components/Halls.vue"
 import FormReservation from "./components/FormReservation.vue"
-import formaS from "./components/FormRacun.vue"
-import FormTrigger from "./components/FormSoba.vue"
+import formBill from "./components/FormBill.vue"
+import FormSoba from "./components/FormRoom.vue"
 import FormUser from "./components/FormUser.vue"
 import user from "./components/Users.vue"
 import login from "./components/Login.vue"
@@ -15,11 +15,11 @@ import Dashboard from "./components/Dashboard.vue"
 import Profil from "./components/Profile.vue"
 import OAuth2RedirectHandler from "./components/OAuth2RedirectHandler.vue"
 import Error from "./components/Error.vue"
-import registration from "./components/RegistrationForm.vue"
-import Poll from "./components/Poll.vue"
-import FormPoll from "./components/FormPoll.vue"
-import Activity from "./components/Activity.vue"
-import viewPoll from "./components/LoginForm.vue"
+import registration from "./components/FormRegistration.vue"
+import Sobe from "./components/Rooms.vue"
+import FormSala from "./components/FormHall.vue"
+import loginForm from "./components/FormLogin.vue"
+import Navigation from "./components/Navigation.vue"
 
 Vue.config.productionTip = false;
 
@@ -38,7 +38,7 @@ const router = new VueRouter({
     },
   {
     path:"/loginForm",
-    component:viewPoll
+    component:loginForm
   },
   {
     path:"/registerForm",
@@ -54,45 +54,37 @@ const router = new VueRouter({
 
     },
     {
+      path:"/navigation",
+      component: Navigation
+    },
+    {
       path: "/dashboard",
       component: Dashboard,
       children:
         [
           {
-            path: "poll",
-            component: Poll,
+            path: "rooms",
+            component: Sobe,
             children:
               [
                 {
-                  path: "newPoll",
-                  component: FormPoll
+                  path: "newRoom",
+                  component: FormSoba
                 },
                 {
-                  path: "viewPoll/:id",
-                  component: viewPoll
+                  path: "updateRoom/:id",
+                  component: FormSoba
                 }
               ]
           },
           {
-            path: "rezervacije",
-            component: messages,
+            path: "reservations",
+            component: reservations,
             children:
               [
                 {
                   path: "newReservation",
                   component: FormReservation
-                },
-                {
-                  path: "newReservation/:id",
-                  component: FormReservation
-                },
-                {
-                  path: "newTrigger/:id",
-                  component: FormTrigger
-                },
-                {
-                  path: "newSchedule/:id",
-                  component: formaS
                 },
                 {
                   path: "updateReservation/:id",
@@ -101,32 +93,32 @@ const router = new VueRouter({
               ]
           },
           {
-            path: "racuni",
-            component: schedules,
+            path: "bills",
+            component: bills,
             children:
               [
                 {
                   path: "newBill",
-                  component: formaS
+                  component: formBill
                 },
                 {
-                  path: "newBill/:id",
-                  component: formaS
+                  path: "updateBill/:id",
+                  component: formBill
                 }
               ]
           },
           {
-            path: "triggers",
-            component: triggers,
+            path: "halls",
+            component: sale,
             children:
               [
                 {
-                  path: "newTrigger",
-                  component: FormTrigger
+                  path: "newHall",
+                  component: FormSala
                 },
                 {
-                  path: "updateTrigger/:id",
-                  component: FormTrigger
+                  path: "updateHall/:id",
+                  component: FormSala
                 }
               ]
           },
@@ -140,10 +132,6 @@ const router = new VueRouter({
                   component: FormUser
                 }
               ]
-          },
-          {
-            path: "activity",
-            component: Activity,
           },
          
           {
