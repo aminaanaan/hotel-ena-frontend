@@ -25,7 +25,7 @@
   </div>
 </template>
 <script>
-import { ACCESS_TOKEN } from "../constants/index.js";
+import { ACCESS_TOKEN,CURRENT_USER_ROLE,USER_EMAIL,USER_NAME } from "../constants/index.js";
 export default {
   name: "error",
   mounted: function() {

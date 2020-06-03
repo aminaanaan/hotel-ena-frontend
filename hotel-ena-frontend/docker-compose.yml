@@ -1,0 +1,8 @@
+version: '3'
+services:
+    dockerize-vuejs-app:
+        ports:
+            - '3000:3000'
+        container_name: dockerize-vuejs-app-1
+        build: .
+       

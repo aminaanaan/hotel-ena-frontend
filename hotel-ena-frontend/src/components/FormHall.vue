@@ -53,7 +53,6 @@ import {
   ACCESS_TOKEN
 } from "../constants/index.js";
 import axios from "axios";
-import DatePicker from "vue2-datepicker";
 import { API_BASE_URL } from "../constants";
 
 const headers = {
@@ -64,7 +63,7 @@ const headers = {
 export default {
   name: "FormHall",
 
-  components: { DatePicker },
+ 
 
   data() {
     return {
@@ -89,14 +88,14 @@ dataReady:false,
         this.numOfPpl = res.data.numberOfPeople;
         //console.log(this.numOfBeds);
         this.busy=res.data.busy;       
-     console.log(res);
+    
  this.showNotification(200,res);
  this.dataReady=true;
 }, (error) => {
-  console.log(error.message);
+ 
   this.showNotification(-1,error.message);
   this.dataReady=true;
-});;
+});
   }
    else{
        this.dataReady=true;
@@ -119,8 +118,7 @@ dataReady:false,
       }
       this.showNoti = !this.showNoti;
       setTimeout(this.closeNoti, 1500);
-      {
-      }
+     
     },
     exit() {
       this.$emit("reload-halls");
@@ -140,13 +138,13 @@ dataReady:false,
               },
               { headers: headers }
             ).then((response) => {
-              console.log(response);
+              
  this.showNotification(200,response);
  this.exit();
 }, (error) => {
-  console.log(error.message);
+ 
   this.showNotification(-1,error.message);
-});;
+});
          
           
         } else {
@@ -160,13 +158,13 @@ dataReady:false,
               },
                  { headers: headers }
             ).then((response) => {
-              console.log(response);
+              
  this.showNotification(200,response);
  this.exit();
 }, (error) => {
-  console.log(error.message);
+  
   this.showNotification(-1,error.message);
-});;
+});
       
     }
     }

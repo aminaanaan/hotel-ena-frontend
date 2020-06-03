@@ -82,9 +82,7 @@
 
 <script scoped>
 import { API_BASE_URL } from "../constants/index.js";
-import { Current_User_Role } from "../constants/index.js";
-import { User_Email } from "../constants/index.js";
-import { ACCESS_TOKEN } from "../constants/index.js";
+import { ACCESS_TOKEN,CURRENT_USER_ROLE } from "../constants/index.js";
 import axios from "axios";
 import ClickOutside from "vue-click-outside";
 import { setTimeout } from "timers";
@@ -135,12 +133,11 @@ export default {
         .then(
           response => {
             this.roomData = response.data;
-            console.log(response);
-            this.showNotification(200, response);
+             this.showNotification(200, response);
             this.exit();
           },
           error => {
-            console.log(error.message);
+           
             this.showNotification(-1, error.message);
           }
         );
@@ -156,8 +153,7 @@ export default {
       }
       this.showNoti = !this.showNoti;
       setTimeout(this.closeNoti, 1500);
-      {
-      }
+   
     },
 
     async deleteRoom(id) {
@@ -170,12 +166,12 @@ export default {
         .delete(API_BASE_URL + "/user/reservation/room/" + id)
         .then(
           response => {
-            console.log(response);
+        
             this.showNotification(200, response);
             this.create();
           },
           error => {
-            console.log(error.message);
+           
             this.showNotification(-1, error.message);
           }
         );

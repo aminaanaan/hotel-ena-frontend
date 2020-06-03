@@ -86,9 +86,7 @@
 import { API_BASE_URL } from "../constants/index.js";
 import axios from "axios";
 import ClickOutside from "vue-click-outside";
-import { Current_User_Role, THEME_ID, THEME } from "../constants/index.js";
-import { User_Email } from "../constants/index.js";
-import { ACCESS_TOKEN, LANGUAGE } from "../constants/index.js";
+import { ACCESS_TOKEN,CURRENT_USER_ROLE } from "../constants/index.js";
 const headers = {
   "Content-Type": "application/json",
   Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
@@ -129,8 +127,7 @@ export default {
       }
       this.showNotificationValue = !this.showNotificationValue;
       setTimeout(this.closeNotification, 1500);
-      {
-      }
+      
     },
 
     closeNotification() {
@@ -153,12 +150,12 @@ export default {
         .delete(API_BASE_URL + "/user/reservation/hall/" + id)
         .then(
           response => {
-            console.log(response);
+           
             this.showNotification(200, response);
             this.create();
           },
           error => {
-            console.log(error.message);
+           
             this.showNotification(-1, error.message);
           }
         );
@@ -177,12 +174,12 @@ export default {
         .then(
           response => {
             this.hallsData = response.data;
-            console.log(response);
+           
             this.showNotification(200, response);
             this.exit();
           },
           error => {
-            console.log(error.message);
+         
             this.showNotification(-1, error.message);
           }
         );

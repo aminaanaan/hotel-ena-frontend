@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { API_BASE_URL, NAME, ROLE, USER_LANGUAGE,CURRENT_USER_ROLE } from "../constants/index.js";
+import { API_BASE_URL,CURRENT_USER_ROLE } from "../constants/index.js";
 
 import { ACCESS_TOKEN } from "../constants/index.js";
 import axios from "axios";
@@ -101,7 +101,7 @@ export default {
       menu: false,
       sortByValue: "role",
       sortType: "desc",
-      textNoti: "",
+   
       errorOccured: false,
       showNotificationValue: false
     };
@@ -148,8 +148,7 @@ export default {
       }
       this.showNotificationValue = !this.showNotificationValue;
       setTimeout(this.closeNotification, 1500);
-      {
-      }
+      
     },
 
     async editUser(id) {
@@ -164,11 +163,11 @@ export default {
         Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
       };
       await axios.delete(API_BASE_URL + "/user/" + id,{headers:headers}).then((response) => {
-              console.log(response);
+              
  this.showNotification(200,response);
  this.create();
 }, (error) => {
-  console.log(error.message);
+  
   this.showNotification(-1,error.message);
 });
       }
@@ -198,11 +197,10 @@ export default {
           { headers: headers }
         ).then((response) => {
            this.usersData = response.data;
-              console.log(response);
+              
  this.showNotification(200,response);
  this.exit();
 }, (error) => {
-  console.log(error.message);
   this.showNotification(-1,error.message);
 });
    }else if(localStorage.getItem(CURRENT_USER_ROLE) == "EMPLOYEE") {
@@ -212,11 +210,11 @@ export default {
           { headers: headers }
         ).then((response) => {
            this.usersData = response.data;
-              console.log(response);
+             
  this.showNotification(200,response);
  this.exit();
 }, (error) => {
-  console.log(error.message);
+  
   this.showNotification(-1,error.message);
    });
     }

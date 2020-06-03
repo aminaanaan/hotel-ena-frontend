@@ -82,8 +82,7 @@ export default {
       }
       this.showNoti = !this.showNoti;
       setTimeout(this.closeNoti, 1500);
-      {
-      }
+      
     },
      closeNoti() {
       this.showNoti = false;

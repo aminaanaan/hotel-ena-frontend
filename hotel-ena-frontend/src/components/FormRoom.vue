@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { ACCESS_TOKEN, USER_ID } from "../constants/index.js";
+import { ACCESS_TOKEN } from "../constants/index.js";
 import axios from "axios";
 
 import { API_BASE_URL } from "../constants";
@@ -95,14 +95,14 @@ export default {
         .then(
           res => {
             this.numOfBeds = res.data.numOfBeds;
-            console.log(this.numOfBeds);
+           
             this.busy = res.data.busy;
-            console.log(res);
+           
             this.showNotification(200, res);
             this.dataReady = true;
           },
           error => {
-            console.log(error.message);
+            
             this.showNotification(-1, error.message);
             this.dataReady = true;
           }
@@ -131,8 +131,7 @@ export default {
       }
       this.showNoti = !this.showNoti;
       setTimeout(this.closeNoti, 1500);
-      {
-      }
+     
     },
 
     async save() {
@@ -148,12 +147,12 @@ export default {
           )
           .then(
             response => {
-              console.log(response);
+             
               this.showNotification(200, response);
               this.exit();
             },
             error => {
-              console.log(error.message);
+            
               this.showNotification(-1, error.message);
             }
           );
@@ -171,12 +170,12 @@ export default {
           )
           .then(
             response => {
-              console.log(response);
+              
               this.showNotification(200, response);
               this.exit();
             },
             error => {
-              console.log(error.message);
+              
               this.showNotification(-1, error.message);
             }
           );
