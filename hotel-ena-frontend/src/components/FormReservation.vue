@@ -133,7 +133,7 @@ export default {
   console.log(error.message);
   this.showNotification(-1,error.message);
   this.dataReady=true;
-});;
+});
      }
      else{
        this.create=true;
@@ -162,8 +162,7 @@ export default {
       }
       this.showNoti = !this.showNoti;
       setTimeout(this.closeNoti, 1500);
-      {
-      }
+   
     },
 
   

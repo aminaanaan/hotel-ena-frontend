@@ -87,10 +87,7 @@ import { API_BASE_URL } from "../constants/index.js";
 import axios from "axios";
 import ClickOutside from "vue-click-outside";
 import { ACCESS_TOKEN,CURRENT_USER_ROLE } from "../constants/index.js";
-const headers = {
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
-};
+
 export default {
   name: "Halls",
   data() {
@@ -141,13 +138,17 @@ export default {
     },
 
     async deleteHall(id) {
+      let headers = {
+  "Content-Type": "application/json",
+  Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
+};
       if(localStorage.getItem(CURRENT_USER_ROLE)=="ADMIN" || localStorage.getItem(CURRENT_USER_ROLE)=="EMPLOYEE"){
       let headers = {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
+        Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN),{headers:headers}
       };
       await axios
-        .delete(API_BASE_URL + "/user/reservation/hall/" + id)
+        .delete(API_BASE_URL + "/user/reservation/hall/" + id,{headers:headers})
         .then(
           response => {
            

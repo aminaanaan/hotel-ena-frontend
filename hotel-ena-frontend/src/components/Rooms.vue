@@ -157,13 +157,14 @@ export default {
     },
 
     async deleteRoom(id) {
+         let headers = {
+  "Content-Type": "application/json",
+  Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
+};
       if(localStorage.getItem(CURRENT_USER_ROLE)=="ADMIN" || localStorage.getItem(CURRENT_USER_ROLE)=="EMPLOYEE"){
-      let headers = {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
-      };
+     
       await axios
-        .delete(API_BASE_URL + "/user/reservation/room/" + id)
+        .delete(API_BASE_URL + "/user/reservation/room/" + id,{headers:headers})
         .then(
           response => {
         

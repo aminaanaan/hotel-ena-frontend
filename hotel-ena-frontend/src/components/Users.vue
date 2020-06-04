@@ -7,16 +7,22 @@
     <div id="divlist">
       <ul id="list">
         <li id="title-li">
+            <div class="column1 column">
+            <h5>Id</h5>
+            <p>
+              <i class="material-icons" >arrow_drop_down</i>
+            </p>
+          </div>
           <div class="column1 column">
             <h5>Name</h5>
             <p>
-              <i class="material-icons" @click="sortBy('name')" title="Sort by name">arrow_drop_down</i>
+              <i class="material-icons" >arrow_drop_down</i>
             </p>
           </div>
           <div class="column2 column">
             <h5>Email</h5>
             <p>
-              <i class="material-icons" @click="sortBy('email')" title="Sort by email">arrow_drop_down</i>
+              <i class="material-icons">arrow_drop_down</i>
             </p>
           </div>
           <div class="column3 column">
@@ -33,8 +39,9 @@
         </li>
 
         <li v-for="user in usersData" :key="user.id">
-          <div class="linear2"></div>
-          <div class="linear1"></div>
+           <div class="column1 column">
+            <p>{{user.id}}</p>
+          </div>
           <div class="column1 column">
             <p>{{user.name}}</p>
           </div>

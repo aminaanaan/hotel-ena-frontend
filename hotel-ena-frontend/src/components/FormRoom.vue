@@ -61,10 +61,7 @@ import { ACCESS_TOKEN } from "../constants/index.js";
 import axios from "axios";
 
 import { API_BASE_URL } from "../constants";
-const headers = {
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
-};
+
 
 export default {
   name: "FormRoom",
@@ -86,6 +83,10 @@ export default {
   },
 
   async mounted() {
+     let headers = {
+  "Content-Type": "application/json",
+  Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
+};
     if (this.$route.params.id != null) {
       await axios
         .get(
