@@ -100,7 +100,6 @@ export default {
          error:"",
          cost:"",
       errorOccured: false,
-      showNoti: false,
       dataReady:false,
       done:false,
       roomId:"",
@@ -127,11 +126,11 @@ export default {
         this.roomId=res.data.roomId;
         this.hallId=res.data.hallId;
      console.log(res);
- this.showNotification(200,res);
+ this.showNotification(200);
  this.dataReady=true;
 }, (error) => {
   console.log(error.message);
-  this.showNotification(-1,error.message);
+  this.showNotification(-1);
   this.dataReady=true;
 });
      }
@@ -152,17 +151,18 @@ export default {
       this.showNotificationValue = false;
     },
 
-       showNotification(value,text) {
-      if (value == -1) {
-        this.textNoti = text;
+         showNotification(value) {
+        if (value == -1) {
+        this.textNoti = "Some error have occured";
         this.errorOccured = true;
       } else {
         this.errorOccured = false;
-        this.textNoti = text;
+        this.textNoti = "Succes";
       }
-      this.showNoti = !this.showNoti;
-      setTimeout(this.closeNoti, 1500);
-   
+      this.showNotificationValue = !this.showNotificationValue;
+      setTimeout(this.closeNotification, 1500);
+      
+     
     },
 
   
@@ -190,11 +190,11 @@ export default {
               { headers: headers }
             ).then((response) => {
               console.log(response);
- this.showNotification(200,response);
+ this.showNotification(200);
  this.exit();
 }, (error) => {
-  console.log(error.message);
-  this.showNotification(-1,error.message);
+ // console.log(error.message);
+  this.showNotification(-1);
 });;
          
           
@@ -217,11 +217,11 @@ export default {
                  { headers: headers }
             ).then((response) => {
               console.log(response);
- this.showNotification(200,response);
+ this.showNotification(200);
  this.exit();
 }, (error) => {
-  console.log(error.message);
-  this.showNotification(-1,error.message);
+  console.log("Happens");
+  this.showNotification(-1);
 });;
       
     }

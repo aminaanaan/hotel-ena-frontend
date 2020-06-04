@@ -73,7 +73,11 @@ export default {
        dataReady:false,
       reservationId:"",
       cost:"",
-      paid:false,    
+      paid:false,  
+        error:"", 
+         errorOccured: false, 
+           textNoti: "",
+        showNotificationValue: false,
     };
   },
 
@@ -98,11 +102,11 @@ export default {
         
        
      console.log(res);
- this.showNotification(200,res);
+ this.showNotification(200);
  this.dataReady=true;
 }, (error) => {
-  console.log(error.message);
-  this.showNotification(-1,error.message);
+  //console.log();
+  this.showNotification(-1);
   this.dataReady=true;
 });;
      }
@@ -163,12 +167,12 @@ export default {
               { headers: headers }
             ).then((response) => {
               console.log(response);
- this.showNotification(200,response);
+ this.showNotification(200);
  this.exit();
 }, (error) => {
   console.log(error.message);
-  this.showNotification(-1,error.message);
-});;
+  this.showNotification(-1);
+});
          
           
         } else {
@@ -184,11 +188,11 @@ export default {
                  { headers: headers }
             ).then((response) => {
               console.log(response);
- this.showNotification(200,response);
+ this.showNotification(200);
  this.exit();
 }, (error) => {
   console.log(error.message);
-  this.showNotification(-1,error.message);
+  this.showNotification(-1);
 });;
       
     }

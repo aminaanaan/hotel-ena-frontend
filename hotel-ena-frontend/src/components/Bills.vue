@@ -198,11 +198,11 @@ export default {
        await axios.post(API_BASE_URL + "/user/pay/bill/" + id,null,   { headers: headers }).then((response) => {
          
               console.log(response);
- this.showNotification(200,response);
+ this.showNotification(200);
  this.create();
 }, (error) => {
   console.log(error.message);
-  this.showNotification(-1,error.message);
+  this.showNotification(-1);
 });
     }
  },
@@ -215,11 +215,11 @@ export default {
        await axios.delete(API_BASE_URL + "/user/bill/" + id,  { headers: headers }).then((response) => {
          
               console.log(response);
- this.showNotification(200,response);
+ this.showNotification(200);
  this.create();
 }, (error) => {
   console.log(error.message);
-  this.showNotification(-1,error.message);
+  this.showNotification(-1);
 });
      
     }
@@ -239,11 +239,11 @@ export default {
         ).then((response) => {
            this.billsData = response.data;
               console.log(response);
- this.showNotification(200,response);
+ this.showNotification(200);
  //this.exit();
 }, (error) => {
   console.log(error.message);
-  this.showNotification(-1,error.message);
+  this.showNotification(-1);
 });
       }
         else if(localStorage.getItem(CURRENT_USER_ROLE)=="EMPLOYEE"){
@@ -254,11 +254,11 @@ export default {
         ).then((response) => {
            this.billsData = response.data;
               console.log(response);
- this.showNotification(200,response);
+ this.showNotification(200);
  //this.exit();
 }, (error) => {
   console.log(error.message);
-  this.showNotification(-1,error.message);
+  this.showNotification(-1);
 });
     }
          else if(localStorage.getItem(CURRENT_USER_ROLE)=="USER"){
@@ -269,11 +269,11 @@ export default {
         ).then((response) => {
            this.billsData = response.data;
               console.log(response);
- this.showNotification(200,response);
+ this.showNotification(200);
  //this.exit();
 }, (error) => {
   console.log(error.message);
-  this.showNotification(-1,error.message);
+  this.showNotification(-1);
 });
     }
     },
@@ -291,7 +291,67 @@ h1 {
   width: 200px;
   float: left;
 }
+#notification {
+  height: 10vh;
+  width: 370px;
+  position: absolute;
+  right: 11%;
+  bottom: 20px;
+  background-color: white;
+  border-radius: 10px;
+  -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
 
+#notification input {
+  height: 60%;
+  width: 100%;
+  text-align: center;
+  font-size: 25px;
+}
+.greenBorder {
+  border: 1px solid rgb(85, 235, 85);
+}
+
+.redBorder {
+  border: 1px solid rgb(248, 74, 74);
+}
+
+.redText {
+  color: rgb(248, 74, 74);
+}
+
+.greenText {
+  color: rgb(85, 235, 85);
+}
+
+.redBackground {
+  background-color: rgb(248, 74, 74);
+}
+
+.redBackground:hover {
+  background-color: rgb(241, 101, 101);
+}
+
+.greenBackground {
+  background-color: rgb(85, 235, 85);
+}
+
+.greenBackground:hover {
+  background-color: rgb(140, 231, 140);
+}
+
+
+#notification button {
+  width: 100%;
+  height: 40%;
+  text-align: center;
+  font-size: 20px;
+  color: white;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
 #header {
   display: block;
   width: 100%;
