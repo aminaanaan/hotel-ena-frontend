@@ -136,6 +136,10 @@ export default {
     },
 
     async save() {
+        let headers = {
+  "Content-Type": "application/json",
+  Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
+};
       if (this.$route.params.id == null) {
         await axios
           .post(

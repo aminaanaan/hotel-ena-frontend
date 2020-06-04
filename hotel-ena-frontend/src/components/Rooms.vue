@@ -55,7 +55,7 @@
 
     <div id="footer">
       <div class="text-xs-center">
-        <v-pagination v-model="page" :length="pagesSize" :total-visible="5" @input="changePage"></v-pagination>
+        <v-pagination ></v-pagination>
       </div>
     </div>
 
@@ -112,10 +112,7 @@ export default {
       this.$router.push("/dashboard/rooms/updateRoom/" + id);
     }
     },
-    changePage(nextPage) {
-      this.page = nextPage;
-      this.reloadRoom(nextPage - 1);
-    },
+  
 
     async reloadRoom() {
       this.create();
@@ -133,12 +130,12 @@ export default {
         .then(
           response => {
             this.roomData = response.data;
-             this.showNotification(200, response);
-            this.exit();
+             this.showNotification(200);
+          
           },
           error => {
            
-            this.showNotification(-1, error.message);
+            this.showNotification(-1);
           }
         );
     },
@@ -168,12 +165,12 @@ export default {
         .then(
           response => {
         
-            this.showNotification(200, response);
+            this.showNotification(200);
             this.create();
           },
           error => {
            
-            this.showNotification(-1, error.message);
+            this.showNotification(-1);
           }
         );
     }

@@ -185,7 +185,7 @@ export default {
           },
           error => {
             console.log(error.message);
-            this.showNotification(-1, error.message);
+            this.showNotification(-1);
           }
         );
        }
@@ -207,10 +207,9 @@ export default {
            this.reservationsData = response.data;
               console.log(response);
  this.showNotification(200,response);
- this.exit();
 }, (error) => {
   console.log(error.message);
-  this.showNotification(-1,error.message);
+  this.showNotification(-1);
 });
       }
       else if(localStorage.getItem(CURRENT_USER_ROLE)=="USER"){
@@ -221,11 +220,10 @@ export default {
         ).then((response) => {
            this.reservationsData = response.data;
               console.log(response);
- this.showNotification(200,response);
- this.exit();
+ this.showNotification(200);
 }, (error) => {
   console.log(error.message);
-  this.showNotification(-1,error.message);
+  this.showNotification(-1);
 });
       }
       else if (localStorage.getItem(CURRENT_USER_ROLE)=="ADMIN"){
@@ -236,11 +234,10 @@ export default {
         ).then((response) => {
            this.reservationsData = response.data;
               console.log(response);
- this.showNotification(200,response);
- this.exit();
+ this.showNotification(200);
 }, (error) => {
   console.log(error.message);
-  this.showNotification(-1,error.message);
+  this.showNotification(-1);
 });
       }
     

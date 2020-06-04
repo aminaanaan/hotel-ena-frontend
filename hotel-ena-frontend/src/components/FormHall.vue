@@ -12,13 +12,13 @@
         <label class="la">Number Of People</label>
         <div id="inner-wrap">
           <input
-            autocomplete="off"
+           
             type="text"
             name="field1"
             placeholder="New hall number of people"
             v-model="numOfPpl"
             id="field1"
-            :class="{errorBorder: showTitleError, noErrorBorder: !showTitleError}"
+            
           />
 
           <br />
@@ -72,7 +72,6 @@ dataReady:false,
         showNotificationValue: false,
          error:"",
       errorOccured: false,
-      showNoti: false,
     };
   },
 
@@ -90,11 +89,11 @@ dataReady:false,
         //console.log(this.numOfBeds);
         this.busy=res.data.busy;       
     
- this.showNotification(200,res);
+ this.showNotification(200);
  this.dataReady=true;
 }, (error) => {
  
-  this.showNotification(-1,error.message);
+  this.showNotification(-1);
   this.dataReady=true;
 });
   }
@@ -109,16 +108,17 @@ dataReady:false,
       this.showNotificationValue = false;
     },
 
-       showNotification(value,text) {
-      if (value == -1) {
-        this.textNoti = text;
+       showNotification(value) {
+        if (value == -1) {
+        this.textNoti = "Some error have occured";
         this.errorOccured = true;
       } else {
         this.errorOccured = false;
-        this.textNoti = text;
+        this.textNoti = "Succes";
       }
-      this.showNoti = !this.showNoti;
-      setTimeout(this.closeNoti, 1500);
+      this.showNotificationValue = !this.showNotificationValue;
+      setTimeout(this.closeNotification, 1500);
+      
      
     },
     exit() {
@@ -126,6 +126,10 @@ dataReady:false,
       this.$router.go(-1);
     },
     async save() {
+        let headers = {
+  "Content-Type": "application/json",
+  Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
+};
       if (this.$route.params.id == null) {
          
             await axios.post(
@@ -140,15 +144,16 @@ dataReady:false,
               { headers: headers }
             ).then((response) => {
               
- this.showNotification(200,response);
+ this.showNotification(200);
  this.exit();
 }, (error) => {
  
-  this.showNotification(-1,error.message);
+  this.showNotification(-1);
 });
          
           
         } else {
+          try{
             await axios.put(
               API_BASE_URL + "/user/reservation/hall/" + this.$route.params.id,
                 {
@@ -158,15 +163,18 @@ dataReady:false,
                
               },
                  { headers: headers }
-            ).then((response) => {
+            ).then((Succes) => {
               
- this.showNotification(200,response);
+ this.showNotification(200);
  this.exit();
 }, (error) => {
   
-  this.showNotification(-1,error.message);
+  this.showNotification(-1);
 });
-      
+          }
+          catch(error){
+             this.showNotification(-1);
+          } 
     }
     }
 

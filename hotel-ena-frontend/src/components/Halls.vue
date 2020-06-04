@@ -115,6 +115,7 @@ export default {
     },
 
     showNotification(value) {
+      console.log("happens");
       if (value == -1) {
         this.textNoti = "Some error have occured";
         this.errorOccured = true;
@@ -145,19 +146,19 @@ export default {
       if(localStorage.getItem(CURRENT_USER_ROLE)=="ADMIN" || localStorage.getItem(CURRENT_USER_ROLE)=="EMPLOYEE"){
       let headers = {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN),{headers:headers}
+        Authorization: "Bearer " + localStorage.getItem(ACCESS_TOKEN)
       };
       await axios
         .delete(API_BASE_URL + "/user/reservation/hall/" + id,{headers:headers})
         .then(
           response => {
            
-            this.showNotification(200, response);
+            this.showNotification(200);
             this.create();
           },
           error => {
            
-            this.showNotification(-1, error.message);
+            this.showNotification(-1);
           }
         );
     }
@@ -176,12 +177,11 @@ export default {
           response => {
             this.hallsData = response.data;
            
-            this.showNotification(200, response);
-            this.exit();
+            this.showNotification(200);
           },
           error => {
          
-            this.showNotification(-1, error.message);
+            this.showNotification(-1);
           }
         );
     }
