@@ -6,6 +6,7 @@ Steps to build app with Docker :
 3. docker-compose up -d --build
 4. App is running on localhost:3000 in browser!
 
+Backend :https://github.com/elmakupusovic/NWT-Projekat-2020
 # Hotel Ena Frontend Vue js app
 
 ## Project setup
